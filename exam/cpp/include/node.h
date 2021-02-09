@@ -25,7 +25,7 @@ struct node {
     /**
      * \brief Default constructor for the class node.
     */
-    node();
+    node() = default;
 
     /**
      * \brief Custom constructor for the class node

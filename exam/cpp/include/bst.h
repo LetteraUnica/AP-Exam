@@ -20,6 +20,7 @@ private:
     // Unique pointer to the root node of the tree
     std::unique_ptr<node> root;
 
+    Tc comp;
     
     bst() = default;
     
@@ -32,6 +33,35 @@ public:
      * \param 
     */
     void insert();
+
+    node* FindSmallest(node* current)
+    {
+	    while(current->left.get())
+	    {
+            current->left;
+	    }
+        return current;
+    }
+
+    node* FindBigger(node* current)
+    {
+        if (current->right)
+        {
+			return FindSmallest(current->right);
+        }
+    	
+        Tk key = current->data.first;
+    	while(current->parent && comp(current->parent->data.first, key))
+    	{
+            current = current->parent;
+    	}
+	    if (current->parent)
+	    {
+            return current->parent;
+	    }
+
+    	return nullptr;
+    }
 };
 
 #include "methods.h"
