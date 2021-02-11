@@ -44,10 +44,12 @@ public:
 
     ~bst()=default;
 
-    auto begin() noexcept;
-    auto begin() const noexcept;
-    auto end() noexcept { return iterator{ nullptr }; }
-    auto end() const noexcept { return iterator{ nullptr }; }
+    iterator begin() noexcept;
+    const_iterator cbegin() const noexcept;
+    iterator end() noexcept { return iterator{ nullptr }; }
+    const_iterator cend() const noexcept { return const_iterator{ nullptr }; }
+
+    iterator new_begin() noexcept;
 
 	
     std::pair<iterator, bool> insert(const pair& x);
