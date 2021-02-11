@@ -57,8 +57,8 @@ public:
 
     friend
     std::ostream &operator<<(std::ostream &os, const bst &x) {
-        for (auto p=x.cbegin(), p!=x.cend(), p++) {
-            os << "key: " << p->data.first "value: " << p->data.second << "\n";
+        for (auto p = x.cbegin(); p != x.cend(); ++p) {
+            os << "key: " << p->data.first << "value: " << p->data.second << "\n";
         }
         os << std::endl;
         return os;

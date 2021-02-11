@@ -82,3 +82,21 @@ template <class K, class V, class CO>
 std::pair<typename bst<K, V, CO>::iterator, bool> bst<K, V, CO>::insert(pair&& x)
 {
 }
+
+
+template <class K, class V, class CO>
+void bst<K, V, CO>::clear()
+{
+	clear_node(root);
+}
+
+template <class N>
+void clear_node(node<N>* n)
+{
+	if (n->left)
+		clear_node(n->left);
+	if (n->right)
+		clear_node(n->right);
+
+	delete n;
+}
