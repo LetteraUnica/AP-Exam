@@ -7,6 +7,7 @@
 #include "node.h"
 #include "iterators.h"
 
+
 template <class K, class V, class CO>
 typename bst<K, V, CO>::iterator bst<K, V, CO>::begin() noexcept
 {

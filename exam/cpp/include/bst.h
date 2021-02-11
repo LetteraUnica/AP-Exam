@@ -55,6 +55,16 @@ public:
     std::pair<iterator, bool> insert(const pair& x);
     std::pair<iterator, bool> insert(pair&& x);
 
+    friend
+    std::ostream &operator<<(std::ostream &os, const bst &x) {
+        for (auto p=x.cbegin(), p!=x.cend(), p++) {
+            os << "key: " << p->data.first "value: " << p->data.second << "\n";
+        }
+        os << std::endl;
+        return os;
+    }
+
+    void clear();
 };
 
 
@@ -152,14 +162,6 @@ class bst<K,V,CO>::_iterator {
 
 
 };
-
-
-
-
-
-
-
-
 
 
 #endif //__BST_
