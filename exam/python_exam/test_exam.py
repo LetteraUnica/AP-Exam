@@ -1,12 +1,30 @@
-import collections
-
-def repetitions_removal(l):
-    ''' takes a list l and returns a list with elements repeated just once (delete repetitions) '''
-    return [item for item in l if l.count(item) == 1] + [item for item, count in collections.Counter(l).items() if count > 1]
-
 def reverse_dict(d):
-    new_keys = set([item for sublist in list(d.values()) for item in sublist])
-    return {k: [item[0] for item in list(d.items()) if item[1].count(k) >= 1] for k in new_keys}
+    old_values = list(d.values())
+
+    new_keys = set([item for sublist in old_values for item in sublist])
+    new_values = []
+
+    for key in new_keys:
+        # a = [list(d.keys())[j] for j, value in enumerate(d.values()) if key in value]
+        a = []
+        for j, value in enumerate(old_values):
+            if key in value:
+                a.append(list(d.keys())[j])
+
+        new_values.append(a)
+
+    return dict([i, j] for i, j in zip(new_keys, new_values))
+
+
+def reverse_dictwrong(d):
+    rd = dict()
+    for key, values in d.items():
+        for val in values:
+            if val in rd:
+                rd[val].append(key)
+            else:
+                rd[val] = [key]   
+    return rd
 
 def test_reverse_small_dict():
     d  = {"a": [1, 2, 3], "b": [45, 6], "c": [2, 45]}
@@ -35,6 +53,7 @@ def test_reverse_small_dict():
     assert 'b' in rd[45]
     assert 'c' in rd[45]
     assert len(rd[45]) == 2
+
 
 import pytest
 

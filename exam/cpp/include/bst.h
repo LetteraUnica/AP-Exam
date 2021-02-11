@@ -1,67 +1,148 @@
-#include <iostream>
-#include<memory> //unique_ptr
-#include<utility> //pair
-
-#include "node.h"
-
-
 /**
- * \tparam Tk type of the node key
- * \tparam Tv type of the node values
- * \tparam Tc type of the comparison operator. Default is std::less<Tk>
+ * \file node.h
+ * \author
+ * \brief header containing the implementation of the binary search tree
 */
-template <class Tk, class Tv, class Tc=std::less<Tk>>
-class bst {
-private:
 
-    using pair = std::pair<const Tk, Tv>;
-    using node = node<pair>;
+#ifndef	__BST_
+#define __BST_
 
-    // Unique pointer to the root node of the tree
+#include<memory> // unique_ptr
+#include<utility> // pair
+#include<functional> // less
+#include<iostream>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<iterator>
+
+template<class K, class V, class CO=std::less<K>>
+class bst
+{
+
+    using pair=std::pair<K,V>;
+
+    struct node;
+
     std::unique_ptr<node> root;
 
-    Tc comp;
-    
-    bst() = default;
-    
-    ~bst() noexcept = default;
+    public:
 
-public:
+    template<class oK, class oV>
+    class _iterator;
 
-    /**
-     * \brief Inserts a new node in the tree
-     * \param 
-    */
-    void insert();
+    using iterator=_iterator<K,V>;
+    using const_iterator=_iterator<const K, const V>;
 
-    node* FindSmallest(node* current)
-    {
-	    while(current->left.get())
-	    {
-            current->left;
-	    }
-        return current;
-    }
+    bst()=default;
 
-    node* FindBigger(node* current)
-    {
-        if (current->right)
-        {
-			return FindSmallest(current->right);
-        }
-    	
-        Tk key = current->data.first;
-    	while(current->parent && comp(current->parent->data.first, key))
-    	{
-            current = current->parent;
-    	}
-	    if (current->parent)
-	    {
-            return current->parent;
-	    }
+    ~bst()=default;
 
-    	return nullptr;
-    }
 };
 
-#include "methods.h"
+//******************************************
+//******************NODE********************
+//******************************************
+
+template<class K, class V, class CO>
+struct bst<K,V,CO>::node {
+
+    pair data;
+
+    std::unique_ptr<node> left;
+
+    std::unique_ptr<node> right;
+
+    node* parent;
+
+    node()=default;
+
+    explicit node(pair n): data{n}, left{nullptr}, right{nullptr}, parent{nullptr} {}
+
+    node(pair n, node* new_parent): data{n},  left{nullptr}, right{nullptr}, parent{new_parent} {}
+
+    ~node() noexcept=default;
+
+    node* findLowest() noexcept {
+
+        if(left) return left->findLowest();
+        return this;
+
+    }
+
+    node* findUpper() noexcept {
+
+        if(parent){
+            if(parent->left==this) return parent;
+            return parent->findUpper();
+        }
+    	return parent;
+
+    }
+
+};
+
+//******************************************
+//****************ITERATOR******************
+//******************************************
+
+template<class K, class V, class CO>
+template<class oK, class oV>
+class bst<K,V,CO>::_iterator {
+
+	//using node=typename bst<K,V,CO>::node;
+
+    node* here;
+
+    public:
+
+    	using value_type=std::pair<oK,oV>;
+    	using reference=value_type&;
+    	using pointer=value_type*;
+    	using difference_type=std::ptrdiff_t;
+    	using iterator_category=std::forward_iterator_tag;
+
+	    _iterator()=default;
+
+	    explicit _iterator(node* p): here{p} {}
+
+	    ~_iterator()=default;
+
+	    _iterator& operator++() {
+	        if(here) {
+	            if(here->right) { 
+	                here=here->right->findLowest();
+	            } else {
+	                here = here->findUpper();
+	            }
+	        }
+	        return *this;
+	    }
+
+	    _iterator operator++(int) {
+	        auto old(*this);
+	        operator++();
+	        return old;
+	    }
+
+	    bool operator==(const _iterator& other_it) {return here==other_it.here;}
+
+	    bool operator!=(const _iterator& other_it) {return !(*this==other_it);}
+
+	    reference operator*() {return here->data;}
+
+	    pointer operator->() {return &(*(*this));}
+
+
+};
+
+
+
+
+
+
+
+
+
+
+#endif //__BST_

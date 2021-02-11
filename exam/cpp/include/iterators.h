@@ -1,53 +1,67 @@
+/**
+ * \file iterators.h
+ * \authors 
+ * \brief header containing the implementation of the class iterator.
+ */
+
+#ifndef __ITERATORS_
+#define __ITERATORS_
+
 #include<memory> //unique_ptr
 #include<utility> //pair
 
-#include "node.h"
-#include "bst.h"
+#include"node.h"
 
 template<class N>
 class iterator {
-    N* current;
 
-public:
-    /**
-     * \brief Default constructor for the class iterator
-     */
-    iterator() : current{FindSmallest()} {}
+    node<N>* here;
 
-    /**
-     * \brief Custom constructor for the class iterator, creates an iterator given a pointer to node
-     * \param n Pointer to node
-     */
-    iterator(N* n) noexcept : current{n} {}
+    public:
 
-    /**
-     * \brief Default destructor for the class iterator
-     */
-    ~iterator() noexcept = default;
+    iterator()=default;
 
-	bool operator==(N* lhs, N* rhs)
-	{
-        return lhs == rhs;
-	}
+    explicit iterator(node<N>* p): here{p} {}
 
-    bool operator!=(N* lhs, N* rhs)
-    {
-        return lhs != rhs;
+    ~iterator()=default;
+
+    iterator& operator++() {
+        if(here) {
+            if(here->right) { 
+                here=here->right->findLowest();
+            } else {
+                here = here->findUpper();
+            }
+        }
+        return *this;
     }
 
-	N& operator*()
-	{
-        return *current;
-	}
+    iterator operator++(int) {
+        iterator old(*this);
+        operator++();
+        return old;
+    }
 
-	N* operator->()
-	{
-        return current;
-	}
+    bool operator==(const iterator& other_it) {return here==other_it.here;}
 
-    N* operator++()
-	{
-        return FindBigger(current);
-	}
-	
+    bool operator!=(const iterator& other_it) {return here!=other_it.here;}
+
+    N& operator*() {return here->data;}
+
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#endif //__ITERATORS_
