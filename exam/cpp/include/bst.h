@@ -4,7 +4,7 @@
  * \brief header containing the implementation of the binary search tree
 */
 
-#ifndef	__BST_
+#ifndef __BST_
 #define __BST_
 
 #include<memory> // unique_ptr
@@ -16,6 +16,9 @@
 #include<algorithm>
 #include<iterator>
 
+#include"node.h"
+#include"iterators.h"
+
 template<class K, class V, class CO=std::less<K>>
 class bst
 {
@@ -26,8 +29,11 @@ class bst
 
     std::unique_ptr<node> root;
 
-    public:
+public:
 
+	// Comparison operator
+    CO comp;
+	
     template<class oK, class oV>
     class _iterator;
 
@@ -38,7 +44,18 @@ class bst
 
     ~bst()=default;
 
+    auto begin() noexcept;
+    auto begin() const noexcept;
+    auto end() noexcept { return iterator{ nullptr }; }
+    auto end() const noexcept { return iterator{ nullptr }; }
+
+	
+    std::pair<iterator, bool> insert(const pair& x);
+    std::pair<iterator, bool> insert(pair&& x);
+
 };
+
+
 
 //******************************************
 //******************NODE********************
@@ -76,8 +93,7 @@ struct bst<K,V,CO>::node {
             if(parent->left==this) return parent;
             return parent->findUpper();
         }
-    	return parent;
-
+        return parent;
     }
 
 };
@@ -96,42 +112,41 @@ class bst<K,V,CO>::_iterator {
 
     public:
 
-    	using value_type=std::pair<oK,oV>;
-    	using reference=value_type&;
-    	using pointer=value_type*;
-    	using difference_type=std::ptrdiff_t;
-    	using iterator_category=std::forward_iterator_tag;
+    using value_type=std::pair<oK,oV>;
+    using reference=value_type&;
+    using pointer=value_type*;
+    using difference_type=std::ptrdiff_t;
+    using iterator_category=std::forward_iterator_tag;
 
-	    _iterator()=default;
+    reference operator*() { return here->data; }
+    pointer operator->() { return &(*(*this)); }
 
-	    explicit _iterator(node* p): here{p} {}
+    _iterator()=default;
 
-	    ~_iterator()=default;
+    explicit _iterator(node* p): here{p} {}
 
-	    _iterator& operator++() {
-	        if(here) {
-	            if(here->right) { 
-	                here=here->right->findLowest();
-	            } else {
-	                here = here->findUpper();
-	            }
-	        }
-	        return *this;
-	    }
+    ~_iterator()=default;
 
-	    _iterator operator++(int) {
-	        auto old(*this);
-	        operator++();
-	        return old;
-	    }
+    _iterator& operator++() {
+        if(here) {
+            if(here->right) { 
+                here=here->right->findLowest();
+            } else {
+                here = here->findUpper();
+            }
+        }
+        return *this;
+    }
 
-	    bool operator==(const _iterator& other_it) {return here==other_it.here;}
+    _iterator operator++(int) {
+        auto old(*this);
+        operator++();
+        return old;
+    }
 
-	    bool operator!=(const _iterator& other_it) {return !(*this==other_it);}
+    bool operator==(const _iterator& other_it) {return here==other_it.here;}
 
-	    reference operator*() {return here->data;}
-
-	    pointer operator->() {return &(*(*this));}
+    bool operator!=(const _iterator& other_it) { return !(*this == other_it); }
 
 
 };
