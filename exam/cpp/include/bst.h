@@ -65,13 +65,16 @@ public:
     }
 
     void clear();
-};
 
+    V& operator[](const K& x);
+    V& operator[](K&& x);
+};
 
 
 //******************************************
 //******************NODE********************
 //******************************************
+
 
 template<class K, class V, class CO>
 struct bst<K,V,CO>::node {

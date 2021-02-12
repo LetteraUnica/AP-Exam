@@ -100,3 +100,29 @@ void clear_node(node<N>* n)
 
 	delete n;
 }
+
+// Insertion with copy
+template <class K, class V, class CO>
+V& bst<K, V, CO>::operator[](const K& x)
+{
+	auto my_node = find(x);
+	if(my_node)
+		return my_node->data.second;
+
+	res = insert(std::pair<K, V>(x, NULL));
+	return *res.first;
+}
+
+
+// Insertion with move
+template <class K, class V, class CO>
+V& bst<K, V, CO>::operator[](K&& x)
+{
+	auto my_node = find(x);
+	if (my_node)
+		return my_node->data.second;
+	return end().here;
+}
+
+iterator find(const key_type& x);
+const_iterator find(const key_type& x) const;
