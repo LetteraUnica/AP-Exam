@@ -23,8 +23,10 @@ template<class K, class V, class CO=std::less<K>>
 class bst
 {
 
-    using pair=std::pair<K,V>;
-
+    using pair_type = std::pair<const K, V>;
+    using key_type = K;
+    using value_type = V;
+	
     struct node;
 
     std::unique_ptr<node> root;
@@ -37,134 +39,73 @@ public:
     template<class oK, class oV>
     class _iterator;
 
-    using iterator=_iterator<K,V>;
-    using const_iterator=_iterator<const K, const V>;
+    using iterator = _iterator<K, V>;
+    using const_iterator = _iterator<const K, const V>;
 
-    bst()=default;
+    bst() = default;
 
-    ~bst()=default;
+    ~bst() = default;
 
-    iterator begin() noexcept;
-    const_iterator cbegin() const noexcept;
-    iterator end() noexcept { return iterator{ nullptr }; }
-    const_iterator cend() const noexcept { return const_iterator{ nullptr }; }
+    bst(const bst& to_copy) {
 
-    iterator new_begin() noexcept;
+        if (to_copy.root) { root.reset(new node{ to_copy.root }); }
+
+    }
+
+    bst& operator=(const bst& to_copy) {
+
+        auto auxiliary{ to_copy };
+        *this = std::move(auxiliary);
+        return *this;
+
+    }
 
 	
-    std::pair<iterator, bool> insert(const pair& x);
-    std::pair<iterator, bool> insert(pair&& x);
+    iterator begin() noexcept;
+    const_iterator begin() const noexcept;
+    const_iterator cbegin() const noexcept;
+    iterator end() noexcept { return iterator{ nullptr }; }
 
+    const_iterator end() const noexcept { return const_iterator{ nullptr }; }
+
+	/**
+	 * \brief
+	 * \return
+	 */
+    const_iterator cend() const noexcept { return const_iterator{ nullptr }; }
+	
+	/**
+	 * \brief Inserts a new node in the tree and returns an iterator if the insertion was successful
+	 * \param x Pair to be inserted of type std::pair<key, value>
+	 * \return std::pair<Iterator,bool> The function returns a pair of:
+	 * An iterator pointing to the node of the input pair
+	 * A bool which is true if a new node has been allocated, false if the node is already in the tree
+	 */
+    std::pair<iterator, bool> insert(const pair_type& x);
+    std::pair<iterator, bool> insert(pair_type&& x);
+
+    //template<class... Types>
+    //std::pair<iterator, bool> emplace(Types&&... args);
+
+    iterator find(const key_type& x);
+
+    const_iterator find(const key_type& x) const;
+
+    void clear();
+	
     friend
     std::ostream &operator<<(std::ostream &os, const bst &x) {
         for (auto p = x.cbegin(); p != x.cend(); ++p) {
-            os << "key: " << p->data.first << "value: " << p->data.second << "\n";
+            os << "(" << "key: " << p->data.first << ", value: " << p->data.second << ") " << "\n";
         }
         os << std::endl;
         return os;
     }
 
-    void clear();
-
     V& operator[](const K& x);
     V& operator[](K&& x);
 };
 
-
-//******************************************
-//******************NODE********************
-//******************************************
-
-
-template<class K, class V, class CO>
-struct bst<K,V,CO>::node {
-
-    pair data;
-
-    std::unique_ptr<node> left;
-
-    std::unique_ptr<node> right;
-
-    node* parent;
-
-    node()=default;
-
-    explicit node(pair n): data{n}, left{nullptr}, right{nullptr}, parent{nullptr} {}
-
-    node(pair n, node* new_parent): data{n},  left{nullptr}, right{nullptr}, parent{new_parent} {}
-
-    ~node() noexcept=default;
-
-    node* findLowest() noexcept {
-
-        if(left) return left->findLowest();
-        return this;
-
-    }
-
-    node* findUpper() noexcept {
-
-        if(parent){
-            if(parent->left==this) return parent;
-            return parent->findUpper();
-        }
-        return parent;
-    }
-
-};
-
-//******************************************
-//****************ITERATOR******************
-//******************************************
-
-template<class K, class V, class CO>
-template<class oK, class oV>
-class bst<K,V,CO>::_iterator {
-
-	//using node=typename bst<K,V,CO>::node;
-
-    node* here;
-
-    public:
-
-    using value_type=std::pair<oK,oV>;
-    using reference=value_type&;
-    using pointer=value_type*;
-    using difference_type=std::ptrdiff_t;
-    using iterator_category=std::forward_iterator_tag;
-
-    reference operator*() { return here->data; }
-    pointer operator->() { return &(*(*this)); }
-
-    _iterator()=default;
-
-    explicit _iterator(node* p): here{p} {}
-
-    ~_iterator()=default;
-
-    _iterator& operator++() {
-        if(here) {
-            if(here->right) { 
-                here=here->right->findLowest();
-            } else {
-                here = here->findUpper();
-            }
-        }
-        return *this;
-    }
-
-    _iterator operator++(int) {
-        auto old(*this);
-        operator++();
-        return old;
-    }
-
-    bool operator==(const _iterator& other_it) {return here==other_it.here;}
-
-    bool operator!=(const _iterator& other_it) { return !(*this == other_it); }
-
-
-};
-
-
 #endif //__BST_
+
+#include "methods.h"

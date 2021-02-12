@@ -7,7 +7,6 @@
 #include "node.h"
 #include "iterators.h"
 
-
 template <class K, class V, class CO>
 typename bst<K, V, CO>::iterator bst<K, V, CO>::begin() noexcept
 {
@@ -18,6 +17,16 @@ typename bst<K, V, CO>::iterator bst<K, V, CO>::begin() noexcept
 	return iterator{ nullptr };
 }
 
+
+template <class K, class V, class CO>
+typename bst<K, V, CO>::const_iterator bst<K, V, CO>::begin() const noexcept
+{
+	if (root)
+	{
+		return const_iterator{ root->findLowest() };
+	}
+	return const_iterator{ nullptr };
+}
 
 template <class K, class V, class CO>
 typename bst<K, V, CO>::const_iterator bst<K, V, CO>::cbegin() const noexcept
@@ -31,7 +40,7 @@ typename bst<K, V, CO>::const_iterator bst<K, V, CO>::cbegin() const noexcept
 
 
 template <class K, class V, class CO>
-std::pair<typename bst<K, V, CO>::iterator, bool> bst<K, V, CO>::insert(const pair& x)
+std::pair<typename bst<K, V, CO>::iterator, bool> bst<K, V, CO>::insert(const pair_type& x)
 {
 	// If the root is null I insert a new node here
 	if(!root)
@@ -78,8 +87,21 @@ std::pair<typename bst<K, V, CO>::iterator, bool> bst<K, V, CO>::insert(const pa
 	
 }
 
+
 template <class K, class V, class CO>
-std::pair<typename bst<K, V, CO>::iterator, bool> bst<K, V, CO>::insert(pair&& x)
+template<class... Types>
+std::pair<typename bst<K, V, CO>::iterator, bool> bst<K, V, CO>::emplace(Types&&... args) {
+
+	if (std::is_constructible<pair_type, Types...>::value) {
+		return insert(std::pair<const K, V>(std::forward<Types>(args)...));
+	}
+	return std::pair<typename bst<K, V, CO>::iterator, bool>(typename bst<K, V, CO>::iterator{ nullptr }, false);
+
+}
+
+
+template <class K, class V, class CO>
+std::pair<typename bst<K, V, CO>::iterator, bool> bst<K, V, CO>::insert(pair_type&& x)
 {
 }
 
@@ -90,8 +112,8 @@ void bst<K, V, CO>::clear()
 	clear_node(root);
 }
 
-template <class N>
-void clear_node(node<N>* n)
+template <class K, class V, class CO>
+void clear_node(typename bst<K, V, CO>::node* n)
 {
 	if (n->left)
 		clear_node(n->left);
@@ -104,13 +126,13 @@ void clear_node(node<N>* n)
 // Insertion with copy
 template <class K, class V, class CO>
 V& bst<K, V, CO>::operator[](const K& x)
-{
-	auto my_node = find(x);
-	if(my_node)
-		return my_node->data.second;
+{	
+	iterator node_found = find(x);
+	if(node_found)
+		return node_found.here->data.second;
 
-	res = insert(std::pair<K, V>(x, NULL));
-	return *res.first;
+	iterator node_inserted = insert(std::pair<K, V>(x, NULL)).first;
+	return node_inserted.here->data.second;
 }
 
 
@@ -118,11 +140,41 @@ V& bst<K, V, CO>::operator[](const K& x)
 template <class K, class V, class CO>
 V& bst<K, V, CO>::operator[](K&& x)
 {
-	auto my_node = find(x);
-	if (my_node)
-		return my_node->data.second;
-	return end().here;
+	iterator node_found = find(std::move(x));
+	if (node_found)
+		return node_found.here->data.second;
+
+	iterator node_inserted = insert(std::pair<K, V>(x, NULL)).first;
+	return node_inserted.here->data.second;
 }
 
-iterator find(const key_type& x);
-const_iterator find(const key_type& x) const;
+
+template <class K, class V, class CO>
+typename bst<K, V, CO>::iterator bst<K, V, CO>::find(const key_type& x) {
+
+	for (const auto& item : *this) {
+
+		if (!comp(item->here->data.first, x) && !comp(x, item->here->data.first)) {
+			return iterator{ item->here };
+		}
+
+	}
+
+	return end();
+
+}
+
+template <class K, class V, class CO>
+typename bst<K, V, CO>::const_iterator bst<K, V, CO>::find(const key_type& x) const {
+
+	for (const auto& item : *this) {
+
+		if (!comp(item->here->data.first, x) && !comp(x, item->here->data.first)) {
+			return const_iterator{ item->here };
+		}
+
+	}
+
+	return cend();
+
+}

@@ -10,58 +10,59 @@
 #include<memory> //unique_ptr
 #include<utility> //pair
 
-#include"node.h"
+#include "node.h"
+#include "bst.h"
 
-template<class N>
-class iterator {
+template<class K, class V, class CO>
+template<class oK, class oV>
+class bst<K, V, CO>::_iterator {
 
-    node<N>* here;
+    node* here;
 
-    public:
+public:
+	
+    using value_type = std::pair<oK, oV>;
+    using reference = value_type&;
+    using pointer = value_type*;
+    using difference_type = std::ptrdiff_t;
+    using iterator_category = std::forward_iterator_tag;
+	
+    _iterator() = default;
 
-    iterator()=default;
+    explicit _iterator(node * p) : here{ p } {}
 
-    explicit iterator(node<N>* p): here{p} {}
+    ~_iterator() = default;
 
-    ~iterator()=default;
-
-    iterator& operator++() {
-        if(here) {
-            if(here->right) { 
-                here=here->right->findLowest();
-            } else {
+    _iterator& operator++() {
+        if (here) 
+        {
+            if (here->right) 
+            {            	
+                here = here->right->findLowest();
+            }
+            else
+            {
                 here = here->findUpper();
             }
         }
         return *this;
     }
 
-    iterator operator++(int) {
-        iterator old(*this);
+    _iterator operator++(int) {
+        auto old(*this);
         operator++();
         return old;
     }
 
-    bool operator==(const iterator& other_it) {return here==other_it.here;}
 
-    bool operator!=(const iterator& other_it) {return here!=other_it.here;}
+    bool operator==(const _iterator& other_it) { return here == other_it.here; }
 
-    N& operator*() {return here->data;}
+    bool operator!=(const _iterator& other_it) { return !(*this == other_it); }
+
+    reference operator*() { return here->data; }
+
+    pointer operator->() { return &(*(*this)); }
 
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #endif //__ITERATORS_

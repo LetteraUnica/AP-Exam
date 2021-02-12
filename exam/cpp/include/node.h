@@ -10,16 +10,13 @@
 #include<memory> //unique_ptr
 #include<utility> //pair
 
-template<class N>
-struct node {
+#include "bst.h"
 
-    //template<class K, class V, class CO> friend class bst;
-    
-    template<class oN> friend class iterator;
+template<class K, class V, class CO>
+struct bst<K, V, CO>::node {
 
     // Data contained in the node
-    N data;
-    using value_type = N;
+    pair_type data;
 
     // Unique pointer to the left node
     std::unique_ptr<node> left;
@@ -31,7 +28,7 @@ struct node {
     /**
      * \brief Default constructor for the class node.
     */
-    node();
+    node() = default;
 
     /**
      * \brief Custom constructor for the class node
@@ -39,8 +36,8 @@ struct node {
      * 
      * Initializes a node with its data
     */
-    node(N n) 
-    : data{n}, left{nullptr}, right{nullptr}, parent{nullptr} {}
+    explicit node(pair_type n) 
+    : data{ n }, left{ nullptr }, right{ nullptr }, parent{ nullptr } {}
 
     /**
      * \brief Custom constructor for the class node
@@ -49,8 +46,8 @@ struct node {
      * 
      * Initializes a node with data and parent node
     */
-    node(N n, node* p)
-    : data{n}, left{nullptr}, right{nullptr}, parent{p} {}
+    node(pair_type n, node* p)
+    : data{ n }, left{ nullptr }, right{ nullptr }, parent{ p } {}
 
     /**
      * \brief Copy constructor for the class node
@@ -64,19 +61,28 @@ struct node {
     */
     ~node() noexcept = default;
 
-    node* findLowest() noexcept {
-        if(left) return left->findLowest();
+    explicit node(const std::unique_ptr<node>& copy_from) :
+        data{ copy_from->data }, left{ nullptr }, right{ nullptr }, parent{ nullptr }
+    {
+        if (copy_from->left) { left.reset(new node{ copy_from->left }); }
+        if (copy_from->right) { left.reset(new node{ copy_from->right }); }
+    }
+
+    node* findLowest() noexcept
+    {
+        if (left) { return left->findLowest(); }
         return this;
     }
 
-    node* findUpper() noexcept {
-        if(parent){
-            if(parent->left==this) return parent;
+    node* findUpper() noexcept
+    {
+        if (parent)
+        {
+            if (parent->left == this) { return parent; }
             return parent->findUpper();
         }
         return parent;
     }
-
 };
 
 #endif //__NODE_
