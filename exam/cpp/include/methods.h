@@ -7,6 +7,9 @@
 #include "node.h"
 #include "iterators.h"
 
+#ifndef __METHODS_
+#define __METHODS_
+
 template <class K, class V, class CO>
 typename bst<K, V, CO>::iterator bst<K, V, CO>::begin() noexcept
 {
@@ -16,7 +19,6 @@ typename bst<K, V, CO>::iterator bst<K, V, CO>::begin() noexcept
 	}
 	return iterator{ nullptr };
 }
-
 
 template <class K, class V, class CO>
 typename bst<K, V, CO>::const_iterator bst<K, V, CO>::begin() const noexcept
@@ -178,3 +180,5 @@ typename bst<K, V, CO>::const_iterator bst<K, V, CO>::find(const key_type& x) co
 	return cend();
 
 }
+
+#endif
