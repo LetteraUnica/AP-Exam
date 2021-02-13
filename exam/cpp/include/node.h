@@ -1,8 +1,8 @@
 /**
  * \file node.h
- * \author
- * \brief header containing the implementation of the bst node
- */
+ * \authors Marco Sicklinger, Marco Sciorilli, Lorenzo Cavuoti
+ * \brief header containing the implementation of the bst node struct
+*/
 
 #ifndef __NODE_
 #define __NODE_
@@ -61,6 +61,10 @@ struct bst<K, V, CO>::node {
     */
     ~node() noexcept = default;
 
+    /**
+     * \brief DA COMMENTARE
+     * \param copy_from 
+     */
     explicit node(const std::unique_ptr<node>& copy_from) :
         data{ copy_from->data }, left{ nullptr }, right{ nullptr }, parent{ nullptr }
     {
@@ -68,12 +72,20 @@ struct bst<K, V, CO>::node {
         if (copy_from->right) { left.reset(new node{ copy_from->right }); }
     }
 
+    /**
+     * \brief Finds the node with the lowest key in the tree
+     * \return Raw pointer to the node with the smallest key
+     */
     node* findLowest() noexcept
     {
         if (left) { return left->findLowest(); }
         return this;
     }
 
+    /**
+     * \brief DA COMMENTARE 
+     * \return 
+     */
     node* findUpper() noexcept
     {
         if (parent)

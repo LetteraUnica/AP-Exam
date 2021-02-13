@@ -1,7 +1,7 @@
 /**
  * \file iterators.h
- * \authors 
- * \brief header containing the implementation of the class iterator.
+ * \authors Marco Sicklinger, Marco Sciorilli, Lorenzo Cavuoti
+ * \brief header containing the implementation of the bst iterator_ class
  */
 
 #ifndef __ITERATORS_
@@ -13,10 +13,16 @@
 #include "node.h"
 #include "bst.h"
 
+/**
+ * \brief Implements the iterator for the bst
+ * \tparam oK type of the key
+ * \tparam oV type of the value
+ */
 template<class K, class V, class CO>
 template<class oK, class oV>
 class bst<K, V, CO>::_iterator {
 
+	// Raw pointer to node
     node* here;
 
 public:
@@ -27,12 +33,31 @@ public:
     using difference_type = std::ptrdiff_t;
     using iterator_category = std::forward_iterator_tag;
 	
+	/**
+     * \brief Default constructor of the class _iterator
+     */
     _iterator() = default;
 
+	/**
+     * \brief Custom constructor of the class _iterator
+     * \param p Raw pointer to node
+     *
+     * Creates an iterator pointing to the given node
+     */
     explicit _iterator(node * p) : here{ p } {}
 
+	/**
+     * \brief Default destructor of the class _iterator
+     */
     ~_iterator() = default;
 
+	/**
+     * \brief Overload of the pre-increment operator ++
+     * \return _iterator& pointing to the next node
+     *
+     * Used to traverse the tree from the leftmost to the rightmost node in
+     * ascending key order
+     */
     _iterator& operator++() {
         if (here) 
         {
@@ -48,6 +73,13 @@ public:
         return *this;
     }
 
+    /**
+	 * \brief Overload of the post-increment operator ++
+	 * \return _iterator& before advancing to the next node
+	 *
+	 * Used to traverse the tree from the leftmost to the rightmost node in
+	 * ascending key order
+	 */
     _iterator operator++(int) {
         auto old(*this);
         operator++();
@@ -55,13 +87,31 @@ public:
     }
 
 
+	/**
+     * \brief Overload of the operator ==
+     * \param other_it Iterator to be compared to
+     * \return bool True if the iterators point to the same node, False otherwise
+     */
     bool operator==(const _iterator& other_it) { return here == other_it.here; }
 
+    /**
+     * \brief Overload of the operator !=
+     * \param other_it Iterator to be compared to
+     * \return bool False if the iterators point to the same node, True otherwise
+     */
     bool operator!=(const _iterator& other_it) { return !(*this == other_it); }
 
-    reference operator*() { return here->data; }
-
+    /**
+	 * \brief Overload of the arrow operator ->
+	 * \return Pointer to the current node the iterator is pointing to
+	 */
     pointer operator->() { return &(*(*this)); }
+	
+	/**
+     * \brief Overload of the dereference operator *
+     * \return Reference to the data of the node the iterator is pointing to
+     */
+    reference operator*() { return here->data; }
 
 };
 
