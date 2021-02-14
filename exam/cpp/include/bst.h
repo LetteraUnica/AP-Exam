@@ -242,13 +242,6 @@ public:
      */
     const_iterator find(const key_type& x) const;
 
-    /**
-     * \brief Overload of the << operator, prints the tree in ascending order
-     * \param os Stream where to print the content of the tree
-     * \param x bst to be printed
-     * \return os Stream where the content has been sent
-     */
-
      /**
      * \brief Balances the bst, i.e. re-structures the tree in order to
      * minimize its depth
@@ -283,7 +276,7 @@ public:
      * Otherwise it adds a new node containing the input key and the default
      * value and returns a reference to the value
      */
-    reference operator[](const K& x);
+    reference operator[](const key_type& x);
 
     /**
      * \brief Overload of the [] operator for moves
@@ -292,26 +285,12 @@ public:
      * Otherwise it adds a new node containing the input key and the default
      * value and returns a reference to the value
      */
-    reference operator[](K&& x);
+    reference operator[](key_type&& x);
 
     void erase_node();
 
 };
 
-//******************************************
-//******************NODE********************
-//******************************************
-
-
-
-//******************************************
-//****************ITERATOR******************
-//******************************************
-
-
-
-
 #include"methods.h"
-
 
 #endif //__BST_
