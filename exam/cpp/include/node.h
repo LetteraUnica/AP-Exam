@@ -4,14 +4,17 @@
  * \brief header containing the implementation of the bst node struct
 */
 
-#ifndef __NODE_
-#define __NODE_
+#ifndef _BST_NODE_
+#define _BST_NODE_
 
 #include<memory> //unique_ptr
 #include<utility> //pair
 
 #include "bst.h"
 
+/**
+ * \brief Definition of the node struct
+ */
 template<class K, class V, class CO>
 struct bst<K, V, CO>::node {
 
@@ -24,7 +27,7 @@ struct bst<K, V, CO>::node {
     std::unique_ptr<node> right;
     // Raw pointer to the parent node
     node* parent;
-    
+
     /**
      * \brief Default constructor for the class node.
     */
@@ -33,28 +36,20 @@ struct bst<K, V, CO>::node {
     /**
      * \brief Custom constructor for the class node
      * \param n Data to be inserted in the node
-     * 
+     *
      * Initializes a node with its data
     */
-    explicit node(pair_type n) 
-    : data{ n }, left{ nullptr }, right{ nullptr }, parent{ nullptr } {}
+    explicit node(pair_type& n)
+        : data{ n }, left{ nullptr }, right{ nullptr }, parent{ nullptr } {}
 
     /**
      * \brief Custom constructor for the class node
      * \param n Data to be inserted in the node
-     * \param p Parent of the node
-     * 
+     * \param new_parent Parent of the node
+     *
      * Initializes a node with data and parent node
     */
-    node(pair_type n, node* p)
-    : data{ n }, left{ nullptr }, right{ nullptr }, parent{ p } {}
-
-    /**
-     * \brief Copy constructor for the class node
-     * \param n Node to be copied
-    */
-    node(const node& n)
-    : data{n.data}, left{nullptr}, right{nullptr}, parent{n.parent} {}
+    node(const pair_type& n, node* new_parent) : data{ n }, left{ nullptr }, right{ nullptr }, parent{ new_parent } {}
 
     /**
      * \brief Default destructor of the class node
@@ -63,12 +58,13 @@ struct bst<K, V, CO>::node {
 
     /**
      * \brief DA COMMENTARE
-     * \param copy_from 
+     * \param copy_from
      */
     explicit node(const std::unique_ptr<node>& copy_from) :
-        data{ copy_from->data }, left{ nullptr }, right{ nullptr }, parent{ nullptr }
-    {
+        data{ copy_from->data }, left{ nullptr }, right{ nullptr }, parent{ nullptr } {
+
         if (copy_from->left) { left.reset(new node{ copy_from->left }); }
+
         if (copy_from->right) { left.reset(new node{ copy_from->right }); }
     }
 
@@ -76,25 +72,38 @@ struct bst<K, V, CO>::node {
      * \brief Finds the node with the lowest key in the tree
      * \return Raw pointer to the node with the smallest key
      */
-    node* findLowest() noexcept
-    {
+    node* findLowest() noexcept {
+
         if (left) { return left->findLowest(); }
         return this;
+
     }
 
     /**
-     * \brief DA COMMENTARE 
-     * \return 
+     * \brief DA COMMENTARE
+     * \return
      */
-    node* findUpper() noexcept
-    {
-        if (parent)
-        {
-            if (parent->left == this) { return parent; }
+    node* findUpper() {
+
+        if (parent) {
+            if (parent->left.get() == this) { return parent; }
             return parent->findUpper();
         }
         return parent;
+
     }
+
+    /**
+     * \brief DA COMMENTARE
+     * \return
+     */
+    node* rightmost() {
+
+        if (right) { return right->rightmost(); }
+        return right.get();
+
+    }
+
 };
 
 #endif //__NODE_
