@@ -4,6 +4,7 @@ CXXFLAGS = -Wall -Wextra -g -std=c++14
 SRC = src/main.cc \
 	  src/benchmark.cc
 
+#prova.cc -> prova.x
 EXE = $(SRC:.cc=.x)
 
 # eliminate default suffixes

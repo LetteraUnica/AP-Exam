@@ -1,5 +1,12 @@
 #include "../include/bst.h"
 
+template<typename T, typename U>
+std::ostream operator<<(std::ostream& os, std::pair<T, U> const pair)
+{
+	os << "(" << pair.first << ", " << pair.second << ") ";
+	return os;
+}
+
 int main()
 {
 	// INSERT
@@ -29,7 +36,7 @@ int main()
 	std::cout << "inserting (10, 7) and printing bst_0" << "\n";
 	std::cout << bst_0;
 
-	bst<int,int> bst_0{pair_3};
+	bst_0.insert(pair_3);
 	std::cout << "Inserting a already known pair and printing bst_0" << "\n";
 	std::cout << bst_0;
 
@@ -41,7 +48,7 @@ int main()
 	std::cout << "finding node with key=0 in bst_0" << "\n";
 	std::cout << node_0 << "\n" << std::endl;
 
-	auto node_0 = bst_0.find(102);
+	node_0 = bst_0.find(102);
 	std::cout << "finding a node with unknown key in bst_0" << "\n";
 	std::cout << node_0 << "\n" << std::endl;
 

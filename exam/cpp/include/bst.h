@@ -299,4 +299,209 @@ public:
 
 #include"methods.h"
 
+
+/**
+ * \brief Implements the iterator for the bst
+ * \tparam oK type of the key
+ * \tparam oV type of the value
+ */
+template<class K, class V, class CO>
+template<class oK, class oV>
+class bst<K, V, CO>::_iterator {
+
+    friend class bst;
+
+    node* here;
+
+public:
+
+    using value_type = std::pair<oK, oV>;
+    using reference = value_type&;
+    using pointer = value_type*;
+    using difference_type = std::ptrdiff_t;
+    using iterator_category = std::forward_iterator_tag;
+
+    /**
+     * \brief Default constructor of the class _iterator
+     */
+    _iterator() = default;
+
+    /**
+     * \brief Custom constructor of the class _iterator
+     * \param p Raw pointer to node
+     *
+     * Creates an iterator pointing to the given node
+     */
+    explicit _iterator(node* p) : here{ p } {}
+
+    _iterator(const _iterator& other_it) : here{ other_it.here } {}
+
+    /**
+     * \brief Default destructor of the class _iterator
+     */
+    ~_iterator() = default;
+
+    /**
+     * \brief Overload of the pre-increment operator ++
+     * \return _iterator& pointing to the next node
+     *
+     * Used to traverse the tree from the leftmost to the rightmost node in
+     * ascending key order
+     */
+    _iterator& operator++() {
+        if (here) {
+            if (here->right) {
+                here = here->right->findLowest();
+            }
+            else {
+                here = here->findUpper();
+            }
+        }
+        return *this;
+    }
+
+    /**
+     * \brief Overload of the post-increment operator ++
+     * \return _iterator& before advancing to the next node
+     *
+     * Used to traverse the tree from the leftmost to the rightmost node in
+     * ascending key order
+     */
+    _iterator operator++(int) {
+        auto old(*this);
+        operator++();
+        return old;
+    }
+
+    /**
+     * \brief Overload of the operator ==
+     * \param other_it Iterator to be compared to
+     * \return bool True if the iterators point to the same node, False otherwise
+     */
+    bool operator==(const _iterator& other_it) const { return here == other_it.here; }
+
+
+    /**
+     * \brief Overload of the operator !=
+     * \param other_it Iterator to be compared to
+     * \return bool False if the iterators point to the same node, True otherwise
+     */
+    bool operator!=(const _iterator& other_it) const { return !(*this == other_it); }
+
+    /**
+     * \brief Overload of the arrow operator ->
+     * \return Pointer to the current node the iterator is pointing to
+     */
+    reference operator*() { return here->data; }
+
+    /**
+     * \brief Overload of the dereference operator *
+     * \return Reference to the data of the node the iterator is pointing to
+     */
+    pointer operator->() { return &(*(*this)); }
+
+    friend
+        std::ostream& operator<<(std::ostream& os, const _iterator& it) {
+        os << "(" << "key: " << it.here->data.first << ", value: " << it.here->data.second << ")";
+        return os;
+    }
+
+};
+
+
+/**
+ * \brief Definition of the node struct
+ */
+template<class K, class V, class CO>
+struct bst<K, V, CO>::node {
+
+    // Data contained in the node
+    pair_type data;
+
+    // Unique pointer to the left node
+    std::unique_ptr<node> left;
+    // Unique pointer to the right node
+    std::unique_ptr<node> right;
+    // Raw pointer to the parent node
+    node* parent;
+
+    /**
+     * \brief Default constructor for the class node.
+    */
+    node() = default;
+
+    /**
+     * \brief Custom constructor for the class node
+     * \param n Data to be inserted in the node
+     *
+     * Initializes a node with its data
+    */
+    explicit node(pair_type& n)
+        : data{ n }, left{ nullptr }, right{ nullptr }, parent{ nullptr } {}
+
+    /**
+     * \brief Custom constructor for the class node
+     * \param n Data to be inserted in the node
+     * \param new_parent Parent of the node
+     *
+     * Initializes a node with data and parent node
+    */
+    node(const pair_type& n, node* new_parent) : data{ n }, left{ nullptr }, right{ nullptr }, parent{ new_parent } {}
+
+    /**
+     * \brief Default destructor of the class node
+    */
+    ~node() noexcept = default;
+
+    /**
+     * \brief DA COMMENTARE
+     * \param copy_from
+     */
+    explicit node(const std::unique_ptr<node>& copy_from) :
+        data{ copy_from->data }, left{ nullptr }, right{ nullptr }, parent{ nullptr } {
+
+        if (copy_from->left) { left.reset(new node{ copy_from->left }); }
+
+        if (copy_from->right) { left.reset(new node{ copy_from->right }); }
+    }
+
+    /**
+     * \brief Finds the node with the lowest key in the tree
+     * \return Raw pointer to the node with the smallest key
+     */
+    node* findLowest() noexcept {
+
+        if (left) { return left->findLowest(); }
+        return this;
+
+    }
+
+    /**
+     * \brief DA COMMENTARE
+     * \return
+     */
+    node* findUpper() {
+
+        if (parent) {
+            if (parent->left.get() == this) { return parent; }
+            return parent->findUpper();
+        }
+        return parent;
+
+    }
+
+    /**
+     * \brief DA COMMENTARE
+     * \return
+     */
+    node* rightmost() {
+
+        if (right) { return right->rightmost(); }
+        return right.get();
+
+    }
+
+};
+
+
 #endif //__BST_

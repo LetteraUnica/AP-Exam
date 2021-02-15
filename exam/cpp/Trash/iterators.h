@@ -20,9 +20,7 @@
 template<class K, class V, class CO>
 template<class oK, class oV>
 class bst<K, V, CO>::_iterator {
-
-    //using node=typename bst<K,V,CO>::node;
-
+	
     friend class bst;
 
     node* here;
