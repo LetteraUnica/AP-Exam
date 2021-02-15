@@ -1,7 +1,10 @@
 #ifndef _BST_METHODS_
 #define _BST_METHODS_
 
+#include <vector>
+
 #include "bst.h"
+
 
 template <class K, class V, class CO>
 typename bst<K, V, CO>::iterator bst<K, V, CO>::begin() noexcept
@@ -178,6 +181,45 @@ typename bst<K, V, CO>::const_iterator bst<K, V, CO>::find(const key_type& x) co
 		}
 	}
 	return cend();
+}
+
+template <class K, class V, class CO>
+unsigned bst<K, V, CO>::get_depth()
+{
+	// If the root is null I return depth 0
+	if (!root)
+		return 0;
+
+	// For each node in the tree I compute its depth and store the maximum in max_depth
+	unsigned max_depth{ 0 };
+	for (auto p = cbegin(); p != cend(); ++p) {
+		unsigned int depth{ 1 };
+		node* here = root.get();
+		auto x = p.here->data;
+		
+		while (here) {
+			// x.key < here.key
+			if (comp(x.first, here->data.first))
+			{
+				here = here->left.get();
+			}
+			// x.key > here.key
+			else if (comp(here->data.first, x.first))
+			{
+				here = here->right.get();
+			}
+			// x.key == here.key
+			else
+			{
+				if (depth > max_depth)
+					max_depth = depth;
+				break;
+			}
+			depth++;
+		}
+	}
+
+	return max_depth;
 }
 
 template<class K, class V, class CO>

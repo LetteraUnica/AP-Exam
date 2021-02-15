@@ -6,12 +6,12 @@ int main()
 	std::cout << "\n\n" << "TEST INSERT" << "\n";
 	bst<int,int> bst_0{};
 
-	std::pair<int, int> pair_0=std::make_pair(0, 1);
-	std::pair<int, int> pair_1=std::make_pair(-3, 8);
-	std::pair<int, int> pair_2=std::make_pair(4, 2);
-	std::pair<int, int> pair_3=std::make_pair(-1, 1);
-	std::pair<int, int> pair_4=std::make_pair(6, 12);
-	std::pair<int, int> pair_5=std::make_pair(10, 7);
+	const auto pair_0=std::make_pair(0, 1);
+	const auto pair_1=std::make_pair(-3, 8);
+	const auto pair_2=std::make_pair(4, 2);
+	const auto pair_3=std::make_pair(-1, 1);
+	const auto pair_4=std::make_pair(6, 12);
+	const auto pair_5=std::make_pair(10, 7);
 	
 
 	(void)bst_0.insert(pair_0);
@@ -53,7 +53,7 @@ int main()
 	std::cout << "printing bst_1" << "\n";
 	std::cout << bst_1;
 
-	bst<int,int> bst_2{bst_1};
+	auto bst_2{bst_1};
 
 	std::cout << "copying bst_1 to bst_2 and printing bst_2" << "\n";
 	std::cout << bst_2;
@@ -119,8 +119,41 @@ int main()
 	std::cout << "erasing the node with key=-128 (doesn't exist) of bst_0" << "\n";
 	std::cout << bst_0;
 
+
+	// GET_DEPTH (USED TO TEST BALANCE AFTERWARDS)
+	std::cout << "\n\n" << "TEST GET_DEPTH (USED TO TEST BALANCE)" << "\n";
+	std::cout << "creating bst_4 with depth=4 with 4 nodes" << "\n";
+	bst<int, int> bst_4{};
+	bst_4.emplace(1, 1);
+	bst_4.emplace(2, 1);
+	bst_4.emplace(3, 1);
+	bst_4.emplace(4, 1);
+	std::cout << "printing bst_4 and its depth" << "\n";
+	std::cout << bst_4;
+	std::cout << bst_4.get_depth() << std::endl;
+	
+	std::cout << "creating bst_5 with depth=4 with 7 nodes" << "\n";
+	bst<int, int> bst_5{bst_4};
+	bst_5.emplace(-1, 1);
+	bst_5.emplace(-2, 1);
+	bst_5.emplace(-3, 1);
+	std::cout << "printing bst_5 and its depth" << "\n";
+	std::cout << bst_5;
+	std::cout << bst_5.get_depth() << std::endl;
+
+	
+	// BALANCE
+	std::cout << "\n\n" << "TEST BALANCE" << "\n";
+	std::cout << "Balancing bst_4 and printing its depth, should be 3" << "\n";
+	bst_4.balance();
+	std::cout << bst_4;
+	std::cout << bst_4.get_depth() << std::endl;
+	
+	std::cout << "Balancing bst_5 and printing its depth, should be 3" << "\n";
+	bst_5.balance();
+	std::cout << bst_5;
+	std::cout << bst_5.get_depth() << std::endl;
+
+
 	return 0;
-
-
-	// BALANCE (CI DOVREMO INVENTARE QUALCOSA QUA)
 }

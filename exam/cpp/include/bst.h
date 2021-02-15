@@ -242,6 +242,12 @@ public:
      */
     const_iterator find(const key_type& x) const;
 
+    /**
+     * \brief Returns the depth of the bst, mainly for testing purposes
+     * \return unsigned int The depth of the bst
+     */
+    unsigned int get_depth();
+	
      /**
      * \brief Balances the bst, i.e. re-structures the tree in order to
      * minimize its depth

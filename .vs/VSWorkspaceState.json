@@ -3,8 +3,9 @@
     "",
     "\\exam",
     "\\exam\\cpp",
-    "\\exam\\cpp\\include"
+    "\\exam\\cpp\\include",
+    "\\exam\\cpp\\trials"
   ],
-  "SelectedNode": "\\exam\\cpp\\include\\iterators.h",
+  "SelectedNode": "\\exam\\cpp\\trials\\trials.cpp",
   "PreviewInSolutionExplorer": false
 }
