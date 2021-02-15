@@ -291,53 +291,6 @@ void bst<K, V, CO>::erase(const key_type& x) {
 
 }
 
-
-template<class K, class V, class CO>
-void bst<K, V, CO>::transplant(key_type& x, key_type& y) {
-	iterator one{ find(x) };
-	iterator two{ find(y) };//have to return the one with no left child
-	node* here_one = one.node();
-	node* here_two = two.node();
-	if (here_one->parent == nullptr) {
-		root = here_two;
-		here_one->erase_node();
-		return;
-	}
-	else {
-		bool side{ child_side(here_one->data.first) };
-		new_child(here_one->parent->data.first, here_two->data.first, side);
-		here_one->erase_node();
-	}
-	return;
-}
-
-template <class K, class V, class CO>
-void bst<K, V, CO>::new_child(key_type& x, key_type& y, bool side) {
-	iterator one{ find(x) };
-	iterator two{ find(y) };//have to return the one with no left child
-	node* here_one = one.node();
-	node* here_two = two.node();
-	if (side == false) {
-		here_one->left = here_two;
-	}
-	else {
-		here_one->right = here_two;
-	}
-	here_two->parent = here_one;
-	return;
-}
-
-template <class K, class V, class CO>
-void bst<K, V, CO>::child_side(key_type& x) {
-	iterator my{ find(key) };
-	node* here = my.node();
-	if (here->parent->right == here)
-		return 1;
-	else {
-		return 0;
-	}
-}
-
 // Insertion with copy
 template <class K, class V, class CO>
 typename bst<K, V, CO>::reference bst<K, V, CO>::operator[](const key_type& x)
