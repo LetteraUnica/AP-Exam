@@ -1,1 +1,1 @@
-CMakeLists.txt not found in C:\Users\Lorenzo\Desktop\AP-Exam Select CMakeLists.txt
+CMakeLists.txt not found in /home/lettera/Desktop/AP-Exam Select CMakeLists.txt

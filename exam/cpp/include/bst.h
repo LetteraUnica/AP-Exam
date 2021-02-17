@@ -16,6 +16,7 @@
 #include<algorithm>
 #include<iterator>
 #include<string>
+#include<cstring>
 
 /**
  * \brief Implementation of the type: binary search tree
@@ -41,10 +42,26 @@ class bst
 
     void clone(const std::unique_ptr<node>& node_to_copy);
 
+    /**
+     * \brief Substitute a node with only one child with its child,taking their respective key as input
+     * \param x     Key of the node to be erased
+     * \param y     Key of the substitute node
+     */
     void transplant(const key_type& x,const key_type& y);
 
+    /**
+     * \brief Set a node as the child of a given parent node, on the given side.
+     * \param x     Key of the parent to be erased
+     * \param y     Key of the child node
+     * \param side  Side of the child node
+     */
     void new_child(const key_type& x,const key_type& y,bool side);
 
+    /**
+     * \brief Given a key of a node, it returns the side of the node relative to its parent
+     * \param x     Key of the node
+     * \return A boolean: false if the node is on the left side, true if the node is on the right side
+     */
     bool child_side(const key_type& x);
     
 public:

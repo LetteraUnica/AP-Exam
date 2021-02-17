@@ -361,159 +361,215 @@ void bst<K, V, CO>::newbalancedtree(std::vector<pair_type>& v, int first, int la
 }
 
 //************************************************
-//*********************ERASE**********************
+//******************ERASE********************
 //************************************************
 
 template<class K, class V, class CO>
-void bst<K, V, CO>::erase(const key_type &key){
-
-    iterator my{find(key)}; //have to return the one with no left child
+void bst<K, V, CO>::erase(const key_type &key) {
+    //Get the iterator pointing to my key
+    iterator my{find(key)};
+    //If the key is not present in the tree, return a message
     if(my == end()) {std::cout<<"key is not in the tree"<<std::endl;}
     else {
+        //Get a pointer to the node to erase, and call it "here"
         node *here= my.here;
-        if((here->left.get()== nullptr) && (here->right.get()== nullptr)){
-            std::cout<<"no child"<<std::endl;//if no child, erase the node
+        //if the node is the root and the only node, clear the three
+        if(!(here->parent)&& !(here->right.get())&& !(here->left.get())){
+            clear();
+        }
+        //Node with 0 child
+        if(!(here->left.get()) && !(here->right.get())){
+            //If here is a right child, release the right node of its parent, and erase it
             if(child_side(here->data.first)){
                 here->parent->right.release();
                 erase_node(here);
                 return;
             }
+                //If here is a right child, release the right node of its parent, and erase it
             else {
                 here->parent->left.release();
                 erase_node(here);
                 return;
             }
         }
-        if(here->left.get()== nullptr &&(here->right.get()!= nullptr)) {
-            std::cout<<"one right child"<<std::endl;//if no left child, substitute with left
+        //Node with 1 child, on the right
+        if(!(here->left.get()) && (here->right.get())) {
+            //Substitute here with its right node
             transplant(here->data.first, here->right.get()->data.first);
             return;
         }
-        if(here->right.get()== nullptr &&(here->left.get()!= nullptr)) {
-            std::cout<<"one left child"<<std::endl;//if no left child, substitute with left
+        //Node with 1 child, on the left
+        if(!(here->right.get()) && (here->left.get())) {
+            //Substitute here with its left node
             transplant(here->data.first, here->left.get()->data.first);
             return;
         }
+            //Node with 2 child
         else{
+            //Find the node with the smallest key on the right branch of the node, and I call it "smaller"
             node* smaller=here->right.get()->findLowest();
-            std::cout<<smaller->data.first<<std::endl;
-            //set left child of smaller as left child of here
+            //If smaller is the right node of its parent
             if(child_side(smaller->data.first)){
+                //Reset smaller's left node to here's left node
                 smaller->left.release();
                 smaller->left.reset(here->left.get());
+                //Reset here's left node parent to smaller
                 here->left.get()->parent = smaller;
             }
+                //If smaller is the left node of its parent
             else {
-                if (smaller->right.get() != nullptr && here->left.get() != smaller) {   //set right child of smaller as left child of smaller's parent
+                //If smaller has a right node, and here is not its parent
+                if (smaller->right.get() && here->left.get() != smaller) {
+                    //Set smaller right node's parent to smaller's parent
                     smaller->right.get()->parent = smaller->parent;
+                    //Reset smaller's parent left node, to smaller's right node
                     smaller->parent->left.release();
                     smaller->parent->left.reset(smaller->right.get());
+                    //Reset smaller's left node to here's left node
                     smaller->left.release();
                     smaller->left.reset(here->left.get());
                 }
-                if (smaller->right.get() != nullptr && here->left.get() == smaller) {
+                //If smaller has a right node, and here is its parent
+                if (smaller->right.get()  && here->left.get() == smaller) {
+                    //Reset smaller left node to its own right node
                     smaller->left.release();
                     smaller->left.reset(smaller->right.get());
                 }
-                if (smaller->right.get() == nullptr && here->left.get() != smaller) {
+                //If smaller has no right node, and here is not its parent
+                if (!(smaller->right.get()) && here->left.get() != smaller) {
+                    //Reset smaller's left node to here's right node
                     smaller->left.release();
                     smaller->left.reset(here->left.get());
+                    //Release smaller's parent left node
                     smaller->parent->left.release();
                     smaller->parent->left.reset();
-                } else {
+                }
+                    //If smaller has no right node, and here is its parent
+                else {
+                    //Release smaller left node
                     smaller->left.release();
                     smaller->left.reset();
                 }
-                smaller->right.release();              //set smaller right child as right child of there
+                //Reset smaller's right node to here's right node
+                smaller->right.release();
                 smaller->right.reset(here->right.get());
             }
-
-            if(here->parent== nullptr)
-            {
-                smaller->parent = nullptr;
+            //If here is a root
+            if(!(here->parent)){
+                //Set smaller parent to nullpointer, reset root to smaller, and erase here
+                smaller->parent=nullptr;
                 root.release();
                 root.reset(smaller);
                 erase_node(here);
                 return;
             }
+                //If here has a parent
             else{
+                //If here is a right node
                 if(here->parent->right.get() == here){
+                    //Reset here's parent's right node to smaller
                     here->parent->right.release();
                     here->parent->right.reset(smaller);
                 }
+                    //If here is a left node
                 else{
+                    //Reset here's parent's left node to smaller
                     here->parent->left.release();
                     here->parent->left.reset(smaller);
                 }
+                //Set smaller's parent node to here's parent node
                 smaller->parent=here->parent;
-                erase_node(here);                  //release parent
+                //Erase here
+                erase_node(here);
                 return;
             }
         }
-
     }
-
-
 }
 
 
+//************************************************
+//******************TRANSPLANT********************
+//************************************************
+
 template<class K, class V, class CO>
-void bst<K, V, CO>::transplant(const key_type& x,const key_type& y) {
+void bst<K, V, CO>::transplant(const key_type& x,const key_type& y){
+    //Get the pointers to the target node, and to the substitute node
     iterator one{find(x)};
-    iterator two{find(y)};//have to return the one with no left child
+    iterator two{find(y)};
     node* here_one = one.here;
     node* here_two = two.here;
-    if(here_one->parent== nullptr){
+    //If the target node is the root, reset to root to substitute, and erase the target
+    if(!(here_one->parent)){
         root.release();
         root.reset(here_two);
         erase_node(here_one);
     }
     else{
+        //Get the side of the target relative to its parent
         bool side{child_side(here_one->data.first)};
+        //Set the substitute as child of the right child to the parent of the target
         new_child(here_one->parent->data.first,here_two->data.first, side);
-        std::cout<<here_two->data.first<<std::endl;
-
+        //Erase target
         erase_node(here_one);
     }
 }
 
+//************************************************
+//******************NEW_CHILD********************
+//************************************************
+
 template<class K, class V, class CO>
 void bst<K, V, CO>::new_child(const key_type& x,const key_type& y,bool side) {
+    //Get the pointers to the parent node, to the child node, and to the side to set the child
     iterator one{find(x)};
-    iterator two{find(y)};//have to return the one with no left child
+    iterator two{find(y)};
     node* here_one = one.here;
     node* here_two = two.here;
+    //If it is the left side, reset parent's left node to child node
     if(!side){
         here_one->left.release();
         here_one->left.reset(here_two);
     }
+        //If it is the right side, reset parent's right node to child node
     else{
         here_one->right.release();
         here_one->right.reset(here_two);
     }
+    //Set child's parent node to parent
     here_two->parent= here_one;
 }
 
+//************************************************
+//******************CHILD_SIDE********************
+//************************************************
 template<class K, class V, class CO>
 bool bst<K, V, CO>::child_side(const key_type &x) {
+    //Find the pointer to the node
     iterator my{find(x)};
     node* current = my.here;
+    //If the node is a right child, return true
     if (current->parent->right.get() == current){
         return true;
     }
+        //If the node is a left child, return false
     else{
-
         return false;
     }
 }
 
-template<class K, class V, class CO>
-void bst<K, V, CO>::erase_node(bst<K, V, CO>::node *N) {
+//************************************************
+//******************ERASE_NODE********************
+//************************************************
 
+
+template<class K, class V, class CO>
+void bst<K, V, CO>::erase_node(bst::node *N) {
+    //Erase node's left, right and parent node
     N->left.release();
     N->right.release();
     N->parent=nullptr;
-
+    delete N;
 }
 
 //************************************************
@@ -563,7 +619,7 @@ void bst<K, V, CO>::print_2D() {
 	// extra spaces needed for deeper nodes in order
 	// not to print the to close to the others.
     for (auto p = cbegin(); p != cend(); ++p) {
-        auto n_spaces=node_depth(p.here->data.first);
+        auto n_spaces=p.here->depth();
         auto extra_spaces=n_spaces;
 
         std::cout << "\n"; 
