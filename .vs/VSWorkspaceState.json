@@ -3,9 +3,10 @@
     "",
     "\\exam",
     "\\exam\\cpp",
+    "\\exam\\cpp\\benchmarks",
     "\\exam\\cpp\\include",
     "\\exam\\cpp\\trials"
   ],
-  "SelectedNode": "\\exam\\cpp\\include\\bst.h",
+  "SelectedNode": "\\exam\\cpp\\benchmarks\\benchmark.cc",
   "PreviewInSolutionExplorer": false
 }

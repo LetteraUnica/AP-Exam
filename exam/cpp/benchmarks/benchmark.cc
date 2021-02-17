@@ -6,22 +6,41 @@
 #include <vector>
 #include <fstream>
 
+/**
+ * \brief Creates a random vector of keys from 0 to v.size()-1
+ * \tparam U Key type
+ * \param v Vector
+ */
 template<typename U>
 void create_keys(std::vector<U>* v) {
     for(int i=0; i<v->size(); i++) {
         v->at(i) = i;
         }
-    std::random_shuffle(v->begin(), v->end());
+    std::shuffle(v->begin(), v->end());
 }
 
+/**
+ * \brief Fills a container with N randomly generated nodes
+ * \tparam T Type of the container
+ * \param container to be filled (must implement a emplace function like in std::map)
+ * \param N Number of nodes to put in the container
+ */
 template<typename T>
 void fill(T* container, int N) {
-    std::vector<int>* keys = new std::vector<int>(N);
+	auto* keys = new std::vector<int>(N);
     create_keys(keys);
-    for(int i=0; i<N; i++) 
+    for(auto i=0; i<N; i++) 
         container->emplace(keys->at(i), i);
 }
 
+/**
+ * \brief Tests the time to find N nodes in a container
+ * \tparam T Type of the container
+ * \param container to test (must implement a find function like in std::map)
+ * \param N Number of nodes to find
+ * \param trials Number of times the test is executed default=10
+ * \return (double) Average time taken for one trial in microseconds
+ */
 template<typename T>
 double test(T* container, int N, int trials = 10) {
 
@@ -40,13 +59,13 @@ double test(T* container, int N, int trials = 10) {
 
 int main(int argc, char* argv[])
 {
-    int N = 10000;
-    auto map_ii = new std::map<int, int>{};
-    auto u_map_ii = new std::unordered_map<int, int>{};
-    auto map_di = new std::map<double, int>{};
-    auto u_map_di = new std::unordered_map<int, int>{};
-    auto map_dd = new std::map<int, int>{};
-    auto u_map_dd = new std::unordered_map<int, int>{};
+	const int N = 10000;
+	auto* map_ii = new std::map<int, int>{};
+	auto* u_map_ii = new std::unordered_map<int, int>{};
+    auto* map_di = new std::map<double, int>{};
+    auto* u_map_di = new std::unordered_map<int, int>{};
+    auto* map_dd = new std::map<int, int>{};
+    auto* u_map_dd = new std::unordered_map<int, int>{};
 
     std::cout << "Filling containers with " << N << " elements\n" << std::endl;
     fill(u_map_ii, N);
