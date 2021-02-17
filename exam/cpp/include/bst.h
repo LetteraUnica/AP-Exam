@@ -1,11 +1,11 @@
 /**
- * \file bst.h
- * \authors Marco Sicklinger, Marco Sciorilli, Lorenzo Cavuoti
- * \brief header containing the implementation of the binary search tree class
+ * \file node.h
+ * \author
+ * \brief header containing the implementation of the binary search tree
 */
 
-#ifndef	_BST_
-#define _BST_
+#ifndef	__BST_
+#define __BST_
 
 #include<memory> // unique_ptr
 #include<utility> // pair
@@ -15,424 +15,406 @@
 #include<vector>
 #include<algorithm>
 #include<iterator>
+#include<string>
 
 /**
- * \brief Implements a binary search tree
- * \tparam K Type of the node key
- * \tparam V Type of the node value
- * \tparam CO Type of the comparison operator. Default std::less<K>
+ * \brief Implementation of the type: binary search tree
+ * \tparam K    Key type
+ * \tparam V    Value type
+ * \tparam CO   Comparison operator typer (default is std::less<K>)
  */
-template<class K, class V, class CO = std::less<K>>
+template<class K, class V, class CO=std::less<K>>
 class bst
 {
-private:
-	
-    using pair_type = std::pair<const K, V>;
-    using key_type = K;
-    using value_type = V;
-    using reference = V&;
 
-    // Struct holding the node of the tree, defined in node.h
-    struct node;
+	using pair_type=std::pair<const K,V>;
+	using key_type=K;
+    using value_type=V;
+    using reference=V&;
 
-    // Unique pointer to the root node
-    std::unique_ptr<node> root;
+    struct node; //!< Struct holding the bst node type
+                 //!< bst node type is defined in the header node.h
 
+    std::unique_ptr<node> root; //!< Unique pointer to the root node
+
+    void newbalancedtree(std::vector<pair_type>& v, int first, int last);
+
+    void clone(const std::unique_ptr<node>& node_to_copy);
+
+    void transplant(const key_type& x,const key_type& y);
+
+    void new_child(const key_type& x,const key_type& y,bool side);
+
+    bool child_side(const key_type& x);
+    
 public:
 
-    // Comparison operator
-    CO comp;
+    CO comp; //!< Comparison operator
 
-    // Class holding the iterator of the bst, defined in iterators.h
+
     template<class oK, class oV>
-    class _iterator;
+    class _iterator; //!< Template class holding the bst iterator type
+                        //!< bst iterator is defined in the header iterator.h
 
-    using iterator = _iterator<K, V>;
-    using const_iterator = _iterator<const K, const V>;
+    using iterator=_iterator<K,V>;
+    using const_iterator=_iterator<const K, const V>;
 
     /**
-     * \brief Default constructor of bst
+     * \brief Default constructor of bst class
      */
-    bst() = default;
-
-    explicit bst(const pair_type& pair) { root.reset(new node{ pair }); }
-
-    explicit bst(pair_type&& pair) { root.reset(new node{ std::move(pair) }); }
-
-    bst(key_type&& _key, value_type&& _value) {
-        root.reset(new node{ std::make_pair(_key, _value) });
-    }
+    bst()=default;
 
     /**
-     * \brief Default destructor of bst
+     * \brief Custom constructor of bst class
+     * \param pair  contains the key and value of the first node with which to build the tree (root)
      */
-    ~bst() = default;
+    explicit bst(const pair_type& pair) { root.reset(new node{pair}); }
 
     /**
-     * \brief Copy constructor of bst
-     * \param to_copy bst to be copied
+     * \brief Custom constructor of bst class
+     * \param _key      contains the key of the first node with which to build the tree (root)
+     * \param _value    contains the value of the first node with which to build the tree (root)
+     */
+    bst(key_type&& _key, value_type&& _value) { root.reset(new node{std::make_pair(_key, _value)}); }
+
+    /**
+     * \brief Default destructor of bst class
+     */
+    ~bst()=default;
+
+    /**
+     * \brief Copy constructor of bst class
+     * \param to_copy  bst object to be copied
+     */
+    bst(const bst& to_copy) { clone(to_copy.root); }
+
+    /**
+     * \brief Copy assignment of bst class
+     * \param to_copy   bst object to be copied
+     * \return bst&     reference to copied binary search tree
+     */
+    bst& operator=(const bst& to_copy);
+
+    /**
+     * \brief Move constructor of bst class
+     * \param move_from  bst object to be moved
      *
-     * Creates a bst by copying the content of the input tree
+     * Creates a bst by moving the content of the input bst
      */
-    bst(const bst& to_copy) {
-        if (to_copy.root) { root.reset(new node{ to_copy.root }); }
-    }
+    bst(bst&& move_from): root(std::move(move_from.root)) { move_from.root.reset(nullptr); }
 
     /**
-     * \brief Copy assignment of bst
-     * \param to_copy bst to be copied
-     * \return bst& copied binary search tree
+     * \brief Move assignment of bst class
+     * \param move_from     bst object to be moved
+     * \return bst&         reference to moved binary search tree
      */
-    bst& operator=(const bst& to_copy) {
-        auto auxiliary{ to_copy };
-        *this = std::move(auxiliary);
-        return *this;
-    }
+    bst& operator=(bst&& move_from);
 
     /**
-     * \brief Move constructor of bst
-     * \param move_from bst to be moved
-     *
-     * Creates a bst by moving the content of the input tree
+     * \brief Inserts a new element in the tree
+     * \param x                             pair to be inserted of type std::pair<key, value>
+     * \return std::pair<iterator,bool>     The function returns a pair of: an iterator pointing to the inserted node,
+     * a bool which is true if a new node has been allocated, false if the key is already present in the tree
      */
-    bst(bst&& move_from) noexcept : root(std::move(move_from.root)) { move_from.root.reset(nullptr); }
-
-    /**
-     * \brief Move assignment of bst
-     * \param move_from bst to be moved
-     * \return bst& modified binary search tree
-     */
-    bst& operator=(bst&& move_from) noexcept {
-        root = std::move(move_from.root);
-        move_from.root.reset(nullptr);
-        return *this;
-    }
-
-    /**
-     * \brief Initializes the iterator on the tree
-     * \return iterator An iterator pointing to the leftmost node, i.e. the one
-     * with the smallest key
-     */
-    iterator begin() noexcept;
-
-    /**
-     * \brief Initializes the iterator on the tree
-     * \return const_iterator A const_iterator pointing to the leftmost node
-     * i.e. the one with the smallest key
-     */
-    const_iterator begin() const noexcept;
-
-    /**
-     * \brief Initializes the iterator on the tree
-     * \return const_iterator A const_iterator pointing to the leftmost node
-     * i.e. the one with the smallest key
-     */
-    const_iterator cbegin() const noexcept;
-
-    /**
-     * \brief Function used to finish the iteration on the tree
-     * \return iterator An iterator pointing to one past the last node,
-     * i.e. the node past the one with the highest key
-     */
-    iterator end() noexcept;
-
-    /**
-     * \brief Function used to finish the iteration on the tree
-     * \return const_iterator A const_iterator pointing to one past the last node,
-     * i.e. the node past the one with the highest key
-     */
-    const_iterator end() const noexcept;
-
-    /**
-     * \brief Function used to finish the iteration on the tree
-     * \return const_iterator A const_iterator pointing to one past the last node,
-     * i.e. the node past the one with the highest key
-     */
-    const_iterator cend() const noexcept;
-
-    /**
-	 * \brief Inserts a new node in the tree
-	 * \param x Pair to be inserted of type std::pair<key, value>
-	 * \return std::pair<iterator,bool> The function returns a pair of:
-	 * An iterator pointing to the inserted node
-	 * A bool which is true if a new node has been allocated, false if the node
-	 * is already in the tree
-	*/
     std::pair<iterator, bool> insert(const pair_type& x);
 
     /**
-     * \brief Inserts a new node in the tree
-     * \param x Pair to be inserted of type std::pair<key, value>
-     * \return std::pair<iterator,bool> The function returns a pair of:
-     * An iterator pointing to the inserted node
-     * A bool which is true if a new node has been allocated, false if the node
-     * is already in the tree
+     * \brief Inserts a new element in the tree
+     * \param x                             pair to be inserted of type std::pair<key, value>
+     * \return std::pair<iterator,bool>     The function returns a pair of: 
+     * an iterator pointing to the inserted node;
+     * a bool which is true if a new node has been allocated, false if the key is already present in the tree
      */
     std::pair<iterator, bool> insert(pair_type&& x);
+
     /**
-     * \brief Inserts a new node in the tree constructed in-place
-     * \tparam Types NON SO COSA METTERE
-     * \param args A key value pair std::pair<key, value>
-     * \return std::pair<iterator,bool> The function returns a pair of:
-     * An iterator pointing to the inserted node
-     * A bool which is true if a new node has been allocated, false if the node
-     * is already in the tree
+     * \brief Inserts a new element in the tree constructed in-place
+     * \tparam Types                        types of the parameters passed to build a new element
+     * \param args                          parameters passed to build a new element
+     * \return std::pair<iterator,bool>     the function returns a pair of: 
+     * an iterator pointing to the inserted node;
+     * a bool which is true if a new node has been allocated, false if the node is already in the tree
      */
     template<class... Types>
-    std::pair<iterator, bool> emplace(Types&&... args);
+    std::pair<iterator,bool> emplace(Types&&... args);
 
-	// FORSE SI PUO' AGGIUNGERE NOEXEPT?
     /**
      * \brief Clears the content of the tree without any memory leak
      */
     void clear();
 
     /**
-     * \brief Finds a node in the bst given the key
-     * \param x Key to be found
-     * \return iterator pointing to the node with that key if the key exists
-     * Otherwise it returns an iterator pointing to "nullptr"
+     * \brief Points to the "smallest" node 
+     * \return iterator     an iterator pointing to the leftmost node, i.e. the one with the smallest key
+     */
+    iterator begin() noexcept;
+
+    /**
+     * \brief Points to the "smallest" node
+     * \return const_iterator    a const_iterator pointing to the leftmost node i.e. the one with the smallest key
+     */
+    const_iterator begin() const noexcept;
+
+    /**
+     * \brief Points to the "smallest" node
+     * \return const_iterator     a const_iterator pointing to the leftmost node, i.e. the one with the smallest key
+     */
+    const_iterator cbegin() const noexcept;
+
+    /**
+     * \brief Points to one past the "biggest" node
+     * \return iterator     an iterator pointing to one past the last node, i.e. the node past the one with the larger key
+     */
+    iterator end() noexcept;
+
+    /**
+     * \brief Points to one past the "biggest" node
+     * \return const_iterator     a const_iterator pointing to one past the last node, i.e. the node past the one with the larger key
+     */
+    const_iterator end() const noexcept;
+
+    /**
+     * \brief Points to one past the "biggest" node
+     * \return const_iterator     a const_iterator pointing to one past the last node, i.e. the node past the one with the larger key
+     */
+    const_iterator cend() const noexcept;
+
+    /**
+     * \brief Finds a node in the bst given a key
+     * \param x             Key to be found
+     * \return iterator     pointing to the node with that key if the key exists, otherwise it returns an iterator pointing to "nullptr"
      */
     iterator find(const key_type& x);
 
     /**
-     * \brief Finds a node in the bst given the key
-     * \param x Key to be found
-     * \return const_iterator pointing to the node with that key if the key exists
-     * Otherwise it returns an iterator pointing to "nullptr"
+     * \brief Finds a node in the bst given a key
+     * \param x                   Key to be found
+     * \return const_iterator     pointing to the node with that key if the key exists, otherwise it returns a const_iterator pointing to "nullptr"
      */
-    const_iterator find(const key_type& x) const;
+    const_iterator find(const key_type& x) const; 
 
     /**
-     * \brief Returns the depth of the bst, mainly for testing purposes
-     * \return unsigned int The depth of the bst
+     * \brief Overload of the put-to operator, which lets the user print the tree in ascending order of the keys
+     * \param os    Stream where to print the content of the tree
+     * \param x     bst to be printed
+     * \return os   Stream where the content has been sent
      */
-    unsigned int get_depth();
-	
-     /**
-     * \brief Balances the bst, i.e. re-structures the tree in order to
-     * minimize its depth
-     */
-    void balance();
-
-    void newbalancedtree(std::vector<pair_type>& v, int first, int last);
-    /**
-     * \brief Removes the node with a given key from the tree
-     * \param x key of the node to be removed
-     */
-    void erase(const key_type& x);
-
-    /**
-     * \brief Overload of the << operator, prints the tree in ascending order
-     * \param os Stream where to print the content of the tree
-     * \param x bst to be printed
-     * \return os Stream where the content has been sent
-     */
-
     friend
-    std::ostream& operator<<(std::ostream& os, const bst& x) {
+    std::ostream &operator<<(std::ostream &os, const bst &x) {
         for (auto p = x.cbegin(); p != x.cend(); ++p) {
             os << p << "\n";
         }
-        os << std::endl;
+        os << std::flush;
         return os;
     }
 
-        /**
-	 * \brief Returns the key and value of the root of the given bst
-	 * \param x bst to return the info
-	 * \return std::pair<key_type, value_type> key and value pair of the root
-	 */
+    /**
+     * \brief Returns the key and value of the root of the given bst
+     * \param x                                     bst to return the info
+     * \return std::pair<key_type, value_type>      pair containing the key and the value of the root node
+     */
     friend
-        auto get_root(const bst& x) {
+    auto get_root(const bst& x) {
+
         auto root_info=std::make_pair(x.root->data.first, x.root->data.second);
         return root_info; 
+
     }
 
     /**
-     * \brief Overload of the [] operator, finds a value given the key
-     * \param x Key to be found
-     * \return If the key exists returns a reference to the associated value
-     * Otherwise it adds a new node containing the input key and the default
+     * \brief Overload of the [] operator, which lets the user find a value given the key
+     * \param x             Key to be found
+     * \return value_type&  If the key exists returns a reference to the associated value. Otherwise it adds a new node containing the input key and the default
      * value and returns a reference to the value
      */
     reference operator[](const key_type& x);
 
     /**
-     * \brief Overload of the [] operator for moves
-     * \param x Key to be found
-     * \return If the key exists returns a reference to the associated value
-     * Otherwise it adds a new node containing the input key and the default
+     * \brief Overload of the [] operator, which lets the user find a value given the key
+     * \param x             Key to be found
+     * \return value_type&  If the key exists returns a reference to the associated value. Otherwise it adds a new node containing the input key and the default
      * value and returns a reference to the value
      */
     reference operator[](key_type&& x);
 
-    void erase_node();
+    /**
+     * \brief Balances the bst, i.e. re-structures the tree in order
+     * to minimize its depth
+     */
+    void balance();
+
+    /**
+     * \brief Erase a node from the tree
+     * \param N     pointer to a node of the tree
+     */
+    void erase_node(node* N);
+    
+    /**
+     * \brief Erase a node with a given key from the tree
+     * \param key    Key of the none to be erased
+     */
+    void erase(const key_type& key);
+
+    /**
+     * \brief Makes depth of the node available for the user
+     * \param k     key value associated with the node whose depth is requested
+     * \return      unsigned int storing the depth of the node identified by the key
+     */
+    unsigned int node_depth(const key_type& k);
+
+    /**
+     * \brief Returns maximum depth of the binary search tree
+     * \return      unsigned int storing the depth of the deepest node of the tree
+     */
+    unsigned int max_depth();
+
+    /**
+     * \brief Prints tree structure
+     */
+    void print_2D();
 
 };
 
-#include"methods.h"
+//******************************************
+//******************NODE********************
+//******************************************
 
-/**
- * \brief Definition of the node struct
- */
 template<class K, class V, class CO>
-struct bst<K, V, CO>::node {
+struct bst<K,V,CO>::node {
 
-    // Data contained in the node
-    pair_type data;
+    pair_type data; //!< pair of a key and a value, stored in the element of the bst object
 
-    // Unique pointer to the left node
-    std::unique_ptr<node> left;
-    // Unique pointer to the right node
-    std::unique_ptr<node> right;
-    // Raw pointer to the parent node
-    node* parent;
+    std::unique_ptr<node> left; //!< Unique pointer to the left child of the current element
+
+    std::unique_ptr<node> right; //!< Unique pointer to the right child of the current element
+
+    node* parent; //!< Pointer to the parent node of the current element
 
     /**
-     * \brief Default constructor for the class node.
-    */
-    node() = default;
-
-    /**
-     * \brief Custom constructor for the class node
-     * \param n Data to be inserted in the node
-     *
-     * Initializes a node with its data
-    */
-    explicit node(pair_type& n)
-        : data{ n }, left{ nullptr }, right{ nullptr }, parent{ nullptr } {}
-
-    /**
-     * \brief Custom constructor for the class node
-     * \param n Data to be inserted in the node
-     * \param new_parent Parent of the node
-     *
-     * Initializes a node with data and parent node
-    */
-    node(const pair_type& n, node* new_parent) : data{ n }, left{ nullptr }, right{ nullptr }, parent{ new_parent } {}
-
-    /**
-     * \brief Default destructor of the class node
-    */
-    ~node() noexcept = default;
-
-    /**
-     * \brief DA COMMENTARE
-     * \param copy_from
+     * \brief Default constructor of node struct
      */
-    explicit node(const std::unique_ptr<node>& copy_from) :
-        data{ copy_from->data }, left{ nullptr }, right{ nullptr }, parent{ nullptr } {
-
-        if (copy_from->left) { left.reset(new node{ copy_from->left }); }
-
-        if (copy_from->right) { left.reset(new node{ copy_from->right }); }
-    }
+    node()=default;
 
     /**
-     * \brief Finds the node with the lowest key in the tree
-     * \return Raw pointer to the node with the smallest key
+     * \brief Custom constructor of node struct
+     * \param n     pair of a key and a value to store in the element node
+     */
+    explicit node(const pair_type& n): data{n}, left{nullptr}, right{nullptr}, parent{nullptr} {}
+
+    /**
+     * \brief Custom destructor of node struct
+     * \param n             pair of a key and a value to store in the element node
+     * \param new_parent    pointer to a node, which will become the parent of the new element node
+     */
+    node(const pair_type& n, node* new_parent): data{n},  left{nullptr}, right{nullptr}, parent{new_parent} {}
+
+    /**
+     * \brief Default destructor of node struct
+     */
+    ~node() noexcept=default;
+
+    /**
+     * \brief Finds the "smaller" element of the bst object that has the current node as root
+     * \return node*    pointer to the leftmost node of the bst object that has the current node as root
      */
     node* findLowest() noexcept {
-
-        if (left) { return left->findLowest(); }
+        // Check recursively for left children untill the last (that is the "smallest")
+        if(left) { return left->findLowest(); }
         return this;
-
     }
 
     /**
-     * \brief DA COMMENTARE
-     * \return
+     * \brief Finds the first right anchestor of the current node
+     * \return node*    pointer to the first anchestor node which stands on the left of the current node
      */
     node* findUpper() {
-
-        if (parent) {
-            if (parent->left.get() == this) { return parent; }
+        if(parent) {
+            // The parent is the first right anchestor of current node if the latter is its 
+            // parent's left child.
+            if(parent->left.get()==this) { return parent; }
+            // Otherwise, a recursive search begins
             return parent->findUpper();
         }
-        return parent;
 
+        // If there is no parent return 'parent==nullptr'
+    	return parent;
     }
 
     /**
-     * \brief DA COMMENTARE
-     * \return
+     * \brief Compute the depth of the current node in the tree 
+     * \return Depth    unsigned int storing the depth of the current node in the tree
      */
-    node* rightmost() {
-
-        if (right) { return right->rightmost(); }
-        return right.get();
-
+    unsigned int depth(unsigned int&& Depth=1) {
+        if(parent) {
+            // If current node has a parent, depth increases by one
+            ++Depth;
+            // Iteratively calls this function for the parent's depth
+            parent->depth(std::move(Depth));
+        }
+        return Depth;
     }
-
 };
 
-/**
- * \brief Implements the iterator for the bst
- * \tparam oK type of the key
- * \tparam oV type of the value
- */
+//******************************************
+//****************ITERATOR******************
+//******************************************
+
 template<class K, class V, class CO>
 template<class oK, class oV>
-class bst<K, V, CO>::_iterator {
+class bst<K,V,CO>::_iterator {
 
     friend class bst;
 
-    node* here;
+    node* here; //!< Pointer to the current element of the bst object
 
 public:
 
-    using value_type = std::pair<oK, oV>;
-    using reference = value_type&;
-    using pointer = value_type*;
-    using difference_type = std::ptrdiff_t;
-    using iterator_category = std::forward_iterator_tag;
+    using value_type=std::pair<oK,oV>;
+    using reference=value_type&;
+    using pointer=value_type*;
+    using difference_type=std::ptrdiff_t;
+    using iterator_category=std::forward_iterator_tag;
 
     /**
-     * \brief Default constructor of the class _iterator
+     * \brief Default constructor of iterator class
      */
-    _iterator() = default;
+    _iterator()=default;
 
     /**
-     * \brief Custom constructor of the class _iterator
-     * \param p Raw pointer to node
-     *
-     * Creates an iterator pointing to the given node
+     * \brief Custom constructor of iterator class
+     * \param p     pointer to a node 
      */
-    explicit _iterator(node* p) : here{ p } {}
-
-    _iterator(const _iterator& other_it) : here{ other_it.here } {}
+    explicit _iterator(node* p): here{p} {}
 
     /**
-     * \brief Default destructor of the class _iterator
+     * \brief Default destructor of iterator class
      */
-    ~_iterator() = default;
+    ~_iterator()=default;
 
     /**
-     * \brief Overload of the pre-increment operator ++
-     * \return _iterator& pointing to the next node
-     *
-     * Used to traverse the tree from the leftmost to the rightmost node in
-     * ascending key order
+     * \brief Pre-increment 
+     * 
+     * Overloading of pre-increment operator
      */
     _iterator& operator++() {
-        if (here) {
-            if (here->right) {
-                here = here->right->findLowest();
-            }
-            else {
-                here = here->findUpper();
+        if(here) {
+            if(here->right) { 
+                // If there is a node on current position's right
+                // "move" to the position corresponding to the 
+                // first key larger than the current one
+                here=here->right->findLowest();
+            } else {
+                // Otherwise find first right anchestor
+                here=here->findUpper();
             }
         }
         return *this;
     }
 
     /**
-     * \brief Overload of the post-increment operator ++
-     * \return _iterator& before advancing to the next node
-     *
-     * Used to traverse the tree from the leftmost to the rightmost node in
-     * ascending key order
+     * \brief Post-increment 
+     * 
+     * Overloading of post-increment operator
      */
     _iterator operator++(int) {
         auto old(*this);
@@ -441,39 +423,52 @@ public:
     }
 
     /**
-     * \brief Overload of the operator ==
-     * \param other_it Iterator to be compared to
-     * \return bool True if the iterators point to the same node, False otherwise
+     * \brief Equality operator 
+     * 
+     * Overloading of equality operator
      */
-    bool operator==(const _iterator& other_it) const { return here == other_it.here; }
-
+    bool operator==(const _iterator& other_it) const {return here==other_it.here;}
 
     /**
-     * \brief Overload of the operator !=
-     * \param other_it Iterator to be compared to
-     * \return bool False if the iterators point to the same node, True otherwise
+     * \brief Inequality operator 
+     * 
+     * Overloading of inequality operator
      */
-    bool operator!=(const _iterator& other_it) const { return !(*this == other_it); }
+    bool operator!=(const _iterator& other_it) const {return !(*this==other_it);}
 
     /**
-     * \brief Overload of the arrow operator ->
-     * \return Pointer to the current node the iterator is pointing to
+     * \brief Dereference operator 
+     * 
+     * Overloading of dereference operator
      */
-    reference operator*() { return here->data; }
+    reference operator*() {return here->data;}
 
     /**
-     * \brief Overload of the dereference operator *
-     * \return Reference to the data of the node the iterator is pointing to
+     * \brief Arrow operator 
+     * 
+     * Overloading of arrow operator
      */
-    pointer operator->() { return &(*(*this)); }
+    pointer operator->() {return &(*(*this));}
 
+    /**
+     * \brief Overload of the put-to operator, which lets the user print the node pointed to by the iterator
+     * \param os    Stream where to print the content of the node poited to by the iterator
+     * \param it    iterator pointing to the node of interest
+     * \return os   Stream where the content has been sent
+     */
     friend
-        std::ostream& operator<<(std::ostream& os, const _iterator& it) {
-        os << "(" << "key: " << it.here->data.first << ", value: " << it.here->data.second << ")";
+    std::ostream &operator<<(std::ostream &os, const _iterator& it) {
+        // If the iterator is null we print NULL
+        if (!it.here) {
+            os << "NULL";
+            return os;
+        }
+        os << "(" << it.here->data.first << "," << it.here->data.second << ")";
         return os;
     }
 
 };
 
+#include"methods.h"
 
 #endif //__BST_

@@ -1,5 +1,7 @@
 #include "../include/bst.h"
 
+// HARD TESTS FOR THE BST CLASS
+
 int main()
 {
 	// INSERT
@@ -8,15 +10,17 @@ int main()
 
 	const auto pair_0=std::make_pair(0, 1);
 	const auto pair_1=std::make_pair(-3, 8);
+	const auto pair_2=std::make_pair(4, 2);
 	const auto pair_3=std::make_pair(-1, 1);
+	const auto pair_4=std::make_pair(6, 12);
 	const auto pair_5=std::make_pair(10, 7);
 	
 
 	(void)bst_0.insert(pair_0);
 	(void)bst_0.insert(pair_1);
-	(void)bst_0.insert(std::make_pair(4, 2));
+	(void)bst_0.insert(pair_2);
 	(void)bst_0.insert(pair_3);
-	(void)bst_0.insert(std::make_pair(6, 12));
+	(void)bst_0.insert(pair_4);
 	std::cout << "bst_0: " << "\n";
 	std::cout << bst_0;
 
@@ -133,29 +137,29 @@ int main()
 	bst_4.emplace(3, 1);
 	bst_4.emplace(4, 1);
 	std::cout << "printing bst_4 and its depth" << "\n";
-	bst_4.print_2D();
+	std::cout << bst_4;
 	std::cout << "depth: " << bst_4.max_depth() << std::endl;
 	
-	std::cout << "\ncreating bst_5 with depth=4 with 7 nodes" << "\n";
+	std::cout << "creating bst_5 with depth=4 with 7 nodes" << "\n";
 	bst<int, int> bst_5{bst_4};
 	bst_5.emplace(-1, 1);
 	bst_5.emplace(-2, 1);
 	bst_5.emplace(-3, 1);
 	std::cout << "printing bst_5 and its depth" << "\n";
-	bst_5.print_2D();
-	std::cout << "depth: " << bst_5.max_depth() << std::endl;
+	std::cout << bst_5;
+	std::cout  << bst_5.max_depth() << std::endl;
 
 	
 	// BALANCE
 	std::cout << "\n\n" << "TEST BALANCE" << "\n";
-	std::cout << "balancing bst_4 and printing its depth, should be 3" << "\n";
+	std::cout << "Balancing bst_4 and printing its depth, should be 3" << "\n";
 	bst_4.balance();
-	bst_4.print_2D();
+	std::cout << bst_4;
 	std::cout << "depth: " << bst_4.max_depth() << std::endl;
 	
-	std::cout << "\nbalancing bst_5 and printing its depth, should be 3" << "\n";
+	std::cout << "Balancing bst_5 and printing its depth, should be 3" << "\n";
 	bst_5.balance();
-	bst_5.print_2D();
+	std::cout << bst_5;
 	std::cout << "depth: " << bst_5.max_depth() << std::endl;
 
 
