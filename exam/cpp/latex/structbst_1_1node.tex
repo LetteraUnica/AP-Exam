@@ -1,0 +1,249 @@
+\hypertarget{structbst_1_1node}{}\section{bst$<$ K, V, CO $>$\+:\+:node Struct Reference}
+\label{structbst_1_1node}\index{bst$<$ K, V, C\+O $>$\+::node@{bst$<$ K, V, C\+O $>$\+::node}}
+
+
+Definition of the node struct.  
+
+
+
+
+{\ttfamily \#include $<$node.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structbst_1_1node_a66d903f45fa31e3b8bc7e8bd56003349}\label{structbst_1_1node_a66d903f45fa31e3b8bc7e8bd56003349}} 
+\hyperlink{structbst_1_1node_a66d903f45fa31e3b8bc7e8bd56003349}{node} ()=default
+\begin{DoxyCompactList}\small\item\em Default constructor of node struct. \end{DoxyCompactList}\item 
+\hyperlink{structbst_1_1node_a02192633338afde3104d8036748dcbe9}{node} (const pair\+\_\+type \&n)
+\begin{DoxyCompactList}\small\item\em Custom constructor of node struct. \end{DoxyCompactList}\item 
+\hyperlink{structbst_1_1node_abd29bdf9f83aedca2dd04264d61624d4}{node} (const pair\+\_\+type \&n, \hyperlink{structbst_1_1node}{node} $\ast$new\+\_\+parent)
+\begin{DoxyCompactList}\small\item\em Custom destructor of node struct. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structbst_1_1node_a80c9e025d6735588e79d8de5042a8ceb}\label{structbst_1_1node_a80c9e025d6735588e79d8de5042a8ceb}} 
+\hyperlink{structbst_1_1node_a80c9e025d6735588e79d8de5042a8ceb}{$\sim$node} () noexcept=default
+\begin{DoxyCompactList}\small\item\em Default destructor of node struct. \end{DoxyCompactList}\item 
+\hyperlink{structbst_1_1node}{node} $\ast$ \hyperlink{structbst_1_1node_ae458e2ef45eab2b7ac3d13e361b12e42}{find\+Lowest} () noexcept
+\begin{DoxyCompactList}\small\item\em Finds the \char`\"{}smaller\char`\"{} element of the bst object that has the current node as root. \end{DoxyCompactList}\item 
+\hyperlink{structbst_1_1node}{node} $\ast$ \hyperlink{structbst_1_1node_a95c26cd3d70b4b8c97506198c1415f94}{find\+Upper} ()
+\begin{DoxyCompactList}\small\item\em Finds the first right anchestor of the current node. \end{DoxyCompactList}\item 
+unsigned int \hyperlink{structbst_1_1node_ae1809e40838eec567474e483f05a93fb}{depth} (unsigned int \&\&Depth=1)
+\begin{DoxyCompactList}\small\item\em Compute the depth of the current node in the tree. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structbst_1_1node_a66d903f45fa31e3b8bc7e8bd56003349}\label{structbst_1_1node_a66d903f45fa31e3b8bc7e8bd56003349}} 
+\hyperlink{structbst_1_1node_a66d903f45fa31e3b8bc7e8bd56003349}{node} ()=default
+\begin{DoxyCompactList}\small\item\em Default constructor for the class node. \end{DoxyCompactList}\item 
+\hyperlink{structbst_1_1node_a1e7240e88331831393a987e30e09f69b}{node} (pair\+\_\+type \&n)
+\begin{DoxyCompactList}\small\item\em Custom constructor for the class node. \end{DoxyCompactList}\item 
+\hyperlink{structbst_1_1node_abd29bdf9f83aedca2dd04264d61624d4}{node} (const pair\+\_\+type \&n, \hyperlink{structbst_1_1node}{node} $\ast$new\+\_\+parent)
+\begin{DoxyCompactList}\small\item\em Custom constructor for the class node. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structbst_1_1node_a80c9e025d6735588e79d8de5042a8ceb}\label{structbst_1_1node_a80c9e025d6735588e79d8de5042a8ceb}} 
+\hyperlink{structbst_1_1node_a80c9e025d6735588e79d8de5042a8ceb}{$\sim$node} () noexcept=default
+\begin{DoxyCompactList}\small\item\em Default destructor of the class node. \end{DoxyCompactList}\item 
+\hyperlink{structbst_1_1node_a53df8bc80453eb24c19a3596e0959205}{node} (const std\+::unique\+\_\+ptr$<$ \hyperlink{structbst_1_1node}{node} $>$ \&copy\+\_\+from)
+\begin{DoxyCompactList}\small\item\em DA C\+O\+M\+M\+E\+N\+T\+A\+RE. \end{DoxyCompactList}\item 
+\hyperlink{structbst_1_1node}{node} $\ast$ \hyperlink{structbst_1_1node_ae458e2ef45eab2b7ac3d13e361b12e42}{find\+Lowest} () noexcept
+\begin{DoxyCompactList}\small\item\em Finds the node with the lowest key in the tree. \end{DoxyCompactList}\item 
+\hyperlink{structbst_1_1node}{node} $\ast$ \hyperlink{structbst_1_1node_a95c26cd3d70b4b8c97506198c1415f94}{find\+Upper} ()
+\begin{DoxyCompactList}\small\item\em DA C\+O\+M\+M\+E\+N\+T\+A\+RE. \end{DoxyCompactList}\item 
+\hyperlink{structbst_1_1node}{node} $\ast$ \hyperlink{structbst_1_1node_ad76e8929422404ad9dd2459ccbc9ee7d}{rightmost} ()
+\begin{DoxyCompactList}\small\item\em DA C\+O\+M\+M\+E\+N\+T\+A\+RE. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structbst_1_1node_a1b32edfc5b4f79da6a57afb7e1fcdfb4}\label{structbst_1_1node_a1b32edfc5b4f79da6a57afb7e1fcdfb4}} 
+pair\+\_\+type \hyperlink{structbst_1_1node_a1b32edfc5b4f79da6a57afb7e1fcdfb4}{data}
+\begin{DoxyCompactList}\small\item\em pair of a key and a value, stored in the element of the bst object \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structbst_1_1node_abd1e68c0c567368df14b07cc6b78e1b7}\label{structbst_1_1node_abd1e68c0c567368df14b07cc6b78e1b7}} 
+std\+::unique\+\_\+ptr$<$ \hyperlink{structbst_1_1node}{node} $>$ \hyperlink{structbst_1_1node_abd1e68c0c567368df14b07cc6b78e1b7}{left}
+\begin{DoxyCompactList}\small\item\em Unique pointer to the left child of the current element. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structbst_1_1node_acd71e61ed51c04692f62960882e7133a}\label{structbst_1_1node_acd71e61ed51c04692f62960882e7133a}} 
+std\+::unique\+\_\+ptr$<$ \hyperlink{structbst_1_1node}{node} $>$ \hyperlink{structbst_1_1node_acd71e61ed51c04692f62960882e7133a}{right}
+\begin{DoxyCompactList}\small\item\em Unique pointer to the right child of the current element. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structbst_1_1node_a07f87fe63f979da463e77775bf8fc972}\label{structbst_1_1node_a07f87fe63f979da463e77775bf8fc972}} 
+\hyperlink{structbst_1_1node}{node} $\ast$ \hyperlink{structbst_1_1node_a07f87fe63f979da463e77775bf8fc972}{parent}
+\begin{DoxyCompactList}\small\item\em Pointer to the parent node of the current element. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$class K, class V, class CO = std\+::less$<$\+K$>$$>$\newline
+struct bst$<$ K, V, C\+O $>$\+::node}
+
+Definition of the node struct. 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{structbst_1_1node_a02192633338afde3104d8036748dcbe9}\label{structbst_1_1node_a02192633338afde3104d8036748dcbe9}} 
+\index{bst\+::node@{bst\+::node}!node@{node}}
+\index{node@{node}!bst\+::node@{bst\+::node}}
+\subsubsection{\texorpdfstring{node()}{node()}\hspace{0.1cm}{\footnotesize\ttfamily [1/5]}}
+{\footnotesize\ttfamily template$<$class K, class V, class CO = std\+::less$<$\+K$>$$>$ \\
+\hyperlink{classbst}{bst}$<$ K, V, CO $>$\+::node\+::node (\begin{DoxyParamCaption}\item[{const pair\+\_\+type \&}]{n }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [explicit]}}
+
+
+
+Custom constructor of node struct. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em n} & pair of a key and a value to store in the element node \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{structbst_1_1node_abd29bdf9f83aedca2dd04264d61624d4}\label{structbst_1_1node_abd29bdf9f83aedca2dd04264d61624d4}} 
+\index{bst\+::node@{bst\+::node}!node@{node}}
+\index{node@{node}!bst\+::node@{bst\+::node}}
+\subsubsection{\texorpdfstring{node()}{node()}\hspace{0.1cm}{\footnotesize\ttfamily [2/5]}}
+{\footnotesize\ttfamily template$<$class K, class V, class CO = std\+::less$<$\+K$>$$>$ \\
+\hyperlink{classbst}{bst}$<$ K, V, CO $>$\+::node\+::node (\begin{DoxyParamCaption}\item[{const pair\+\_\+type \&}]{n,  }\item[{\hyperlink{structbst_1_1node}{node} $\ast$}]{new\+\_\+parent }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Custom destructor of node struct. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em n} & pair of a key and a value to store in the element node \\
+\hline
+{\em new\+\_\+parent} & pointer to a node, which will become the parent of the new element node \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{structbst_1_1node_a1e7240e88331831393a987e30e09f69b}\label{structbst_1_1node_a1e7240e88331831393a987e30e09f69b}} 
+\index{bst\+::node@{bst\+::node}!node@{node}}
+\index{node@{node}!bst\+::node@{bst\+::node}}
+\subsubsection{\texorpdfstring{node()}{node()}\hspace{0.1cm}{\footnotesize\ttfamily [3/5]}}
+{\footnotesize\ttfamily template$<$class K, class V, class CO = std\+::less$<$\+K$>$$>$ \\
+\hyperlink{classbst}{bst}$<$ K, V, CO $>$\+::node\+::node (\begin{DoxyParamCaption}\item[{pair\+\_\+type \&}]{n }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [explicit]}}
+
+
+
+Custom constructor for the class node. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em n} & Data to be inserted in the node\\
+\hline
+\end{DoxyParams}
+Initializes a node with its data \mbox{\Hypertarget{structbst_1_1node_abd29bdf9f83aedca2dd04264d61624d4}\label{structbst_1_1node_abd29bdf9f83aedca2dd04264d61624d4}} 
+\index{bst\+::node@{bst\+::node}!node@{node}}
+\index{node@{node}!bst\+::node@{bst\+::node}}
+\subsubsection{\texorpdfstring{node()}{node()}\hspace{0.1cm}{\footnotesize\ttfamily [4/5]}}
+{\footnotesize\ttfamily template$<$class K, class V, class CO = std\+::less$<$\+K$>$$>$ \\
+\hyperlink{classbst}{bst}$<$ K, V, CO $>$\+::node\+::node (\begin{DoxyParamCaption}\item[{const pair\+\_\+type \&}]{n,  }\item[{\hyperlink{structbst_1_1node}{node} $\ast$}]{new\+\_\+parent }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Custom constructor for the class node. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em n} & Data to be inserted in the node \\
+\hline
+{\em new\+\_\+parent} & Parent of the node\\
+\hline
+\end{DoxyParams}
+Initializes a node with data and parent node \mbox{\Hypertarget{structbst_1_1node_a53df8bc80453eb24c19a3596e0959205}\label{structbst_1_1node_a53df8bc80453eb24c19a3596e0959205}} 
+\index{bst\+::node@{bst\+::node}!node@{node}}
+\index{node@{node}!bst\+::node@{bst\+::node}}
+\subsubsection{\texorpdfstring{node()}{node()}\hspace{0.1cm}{\footnotesize\ttfamily [5/5]}}
+{\footnotesize\ttfamily template$<$class K, class V, class CO = std\+::less$<$\+K$>$$>$ \\
+\hyperlink{classbst}{bst}$<$ K, V, CO $>$\+::node\+::node (\begin{DoxyParamCaption}\item[{const std\+::unique\+\_\+ptr$<$ \hyperlink{structbst_1_1node}{node} $>$ \&}]{copy\+\_\+from }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [explicit]}}
+
+
+
+DA C\+O\+M\+M\+E\+N\+T\+A\+RE. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em copy\+\_\+from} & \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{structbst_1_1node_ae1809e40838eec567474e483f05a93fb}\label{structbst_1_1node_ae1809e40838eec567474e483f05a93fb}} 
+\index{bst\+::node@{bst\+::node}!depth@{depth}}
+\index{depth@{depth}!bst\+::node@{bst\+::node}}
+\subsubsection{\texorpdfstring{depth()}{depth()}}
+{\footnotesize\ttfamily template$<$class K, class V, class CO = std\+::less$<$\+K$>$$>$ \\
+unsigned int \hyperlink{classbst}{bst}$<$ K, V, CO $>$\+::node\+::depth (\begin{DoxyParamCaption}\item[{unsigned int \&\&}]{Depth = {\ttfamily 1} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Compute the depth of the current node in the tree. 
+
+\begin{DoxyReturn}{Returns}
+Depth unsigned int storing the depth of the current node in the tree 
+\end{DoxyReturn}
+\mbox{\Hypertarget{structbst_1_1node_ae458e2ef45eab2b7ac3d13e361b12e42}\label{structbst_1_1node_ae458e2ef45eab2b7ac3d13e361b12e42}} 
+\index{bst\+::node@{bst\+::node}!find\+Lowest@{find\+Lowest}}
+\index{find\+Lowest@{find\+Lowest}!bst\+::node@{bst\+::node}}
+\subsubsection{\texorpdfstring{find\+Lowest()}{findLowest()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$class K, class V, class CO = std\+::less$<$\+K$>$$>$ \\
+\hyperlink{structbst_1_1node}{node}$\ast$ \hyperlink{classbst}{bst}$<$ K, V, CO $>$\+::node\+::find\+Lowest (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+
+
+Finds the node with the lowest key in the tree. 
+
+\begin{DoxyReturn}{Returns}
+Raw pointer to the node with the smallest key 
+\end{DoxyReturn}
+\mbox{\Hypertarget{structbst_1_1node_ae458e2ef45eab2b7ac3d13e361b12e42}\label{structbst_1_1node_ae458e2ef45eab2b7ac3d13e361b12e42}} 
+\index{bst\+::node@{bst\+::node}!find\+Lowest@{find\+Lowest}}
+\index{find\+Lowest@{find\+Lowest}!bst\+::node@{bst\+::node}}
+\subsubsection{\texorpdfstring{find\+Lowest()}{findLowest()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$class K, class V, class CO = std\+::less$<$\+K$>$$>$ \\
+\hyperlink{structbst_1_1node}{node}$\ast$ \hyperlink{classbst}{bst}$<$ K, V, CO $>$\+::node\+::find\+Lowest (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+
+
+Finds the \char`\"{}smaller\char`\"{} element of the bst object that has the current node as root. 
+
+\begin{DoxyReturn}{Returns}
+node$\ast$ pointer to the leftmost node of the bst object that has the current node as root 
+\end{DoxyReturn}
+\mbox{\Hypertarget{structbst_1_1node_a95c26cd3d70b4b8c97506198c1415f94}\label{structbst_1_1node_a95c26cd3d70b4b8c97506198c1415f94}} 
+\index{bst\+::node@{bst\+::node}!find\+Upper@{find\+Upper}}
+\index{find\+Upper@{find\+Upper}!bst\+::node@{bst\+::node}}
+\subsubsection{\texorpdfstring{find\+Upper()}{findUpper()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$class K, class V, class CO = std\+::less$<$\+K$>$$>$ \\
+\hyperlink{structbst_1_1node}{node}$\ast$ \hyperlink{classbst}{bst}$<$ K, V, CO $>$\+::node\+::find\+Upper (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+DA C\+O\+M\+M\+E\+N\+T\+A\+RE. 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{structbst_1_1node_a95c26cd3d70b4b8c97506198c1415f94}\label{structbst_1_1node_a95c26cd3d70b4b8c97506198c1415f94}} 
+\index{bst\+::node@{bst\+::node}!find\+Upper@{find\+Upper}}
+\index{find\+Upper@{find\+Upper}!bst\+::node@{bst\+::node}}
+\subsubsection{\texorpdfstring{find\+Upper()}{findUpper()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$class K, class V, class CO = std\+::less$<$\+K$>$$>$ \\
+\hyperlink{structbst_1_1node}{node}$\ast$ \hyperlink{classbst}{bst}$<$ K, V, CO $>$\+::node\+::find\+Upper (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Finds the first right anchestor of the current node. 
+
+\begin{DoxyReturn}{Returns}
+node$\ast$ pointer to the first anchestor node which stands on the left of the current node 
+\end{DoxyReturn}
+\mbox{\Hypertarget{structbst_1_1node_ad76e8929422404ad9dd2459ccbc9ee7d}\label{structbst_1_1node_ad76e8929422404ad9dd2459ccbc9ee7d}} 
+\index{bst\+::node@{bst\+::node}!rightmost@{rightmost}}
+\index{rightmost@{rightmost}!bst\+::node@{bst\+::node}}
+\subsubsection{\texorpdfstring{rightmost()}{rightmost()}}
+{\footnotesize\ttfamily template$<$class K, class V, class CO = std\+::less$<$\+K$>$$>$ \\
+\hyperlink{structbst_1_1node}{node}$\ast$ \hyperlink{classbst}{bst}$<$ K, V, CO $>$\+::node\+::rightmost (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+DA C\+O\+M\+M\+E\+N\+T\+A\+RE. 
+
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+The documentation for this struct was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/bst.\+h\item 
+Trash/\hyperlink{node_8h}{node.\+h}\end{DoxyCompactItemize}

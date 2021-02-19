@@ -1,7 +1,9 @@
 # map=std::map, u_map=std::unordered_map
 # <K, V> =  K: type of key V: type of value
 #
-# Time[us] to find 10000 elements in various containers
+# Time[us] to find 20000 elements in various containers
 		<int, int>	<double, int>	<double, double>
-map		2992.73		232.333		244.487
-u_map	822.907		419.775		421.27
+map		6653.44		6330.64		6059.38
+u_map	1741.31		1744.36		1718.02
+bst		8065.86	8445.14	8234.43
+bst_b	6610.31	6627.53	6424.65

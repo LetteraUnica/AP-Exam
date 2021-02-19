@@ -51,11 +51,12 @@ int main()
         bst_0->insert(pair);
     }
 
+	bst_0[10] = 40;
     for (auto i = 0; i<N; ++i)
     {
-        auto node = bst_0->find(i);
-        std::cout << node << std::endl;
-        if(node->first != i || node->second != i+1)
+        auto iter = bst_0->find(i);
+        std::cout << iter << std::endl;
+        if(iter->first != i || iter->second != i+1)
         {
             std::cout << "ERROR!!" << std::endl;
         }

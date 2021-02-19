@@ -1,8 +1,8 @@
 CXX = c++
 CXXFLAGS = -Wall -Wextra -g -std=c++14
 
-SRC = src/main.cc \
-	  src/benchmark.cc
+SRC = trials/trials.cc \
+	  benchmarks/benchmark.cc
 
 #prova.cc -> prova.x
 EXE = $(SRC:.cc=.x)
@@ -18,8 +18,10 @@ all: $(EXE)
 
 .PHONY: all
 
-docs: Doxygen/doxy.in
+documentation: Doxygen/doxy.in
 	doxygen $^
+
+.PHONY: documentation
 
 %.x: %.cc 
 	$(CXX) $< -o $@ $(CXXFLAGS)

@@ -1,0 +1,133 @@
+\begin{theindex}
+
+  \item {\+\_\+iterator}
+    \subitem {bst\+::\+\_\+iterator}, \hyperpage{6, 7}
+
+  \indexspace
+
+  \item {begin}
+    \subitem {bst}, \hyperpage{15}
+  \item {bst}
+    \subitem {begin}, \hyperpage{15}
+    \subitem {bst}, \hyperpage{13, 14}
+    \subitem {cbegin}, \hyperpage{15}
+    \subitem {cend}, \hyperpage{15}
+    \subitem {emplace}, \hyperpage{16}
+    \subitem {end}, \hyperpage{16}
+    \subitem {erase}, \hyperpage{17}
+    \subitem {erase\+\_\+node}, \hyperpage{17}
+    \subitem {find}, \hyperpage{17, 18}
+    \subitem {get\+\_\+root}, \hyperpage{21}
+    \subitem {insert}, \hyperpage{18}
+    \subitem {iterator}, \hyperpage{13}
+    \subitem {max\+\_\+depth}, \hyperpage{19}
+    \subitem {node\+\_\+depth}, \hyperpage{19}
+    \subitem {operator$<$$<$}, \hyperpage{21}
+    \subitem {operator=}, \hyperpage{19, 20}
+    \subitem {operator[]}, \hyperpage{20, 21}
+  \item {bst$<$ K, V, C\+O $>$}, \hyperpage{11}
+  \item {bst$<$ K, V, C\+O $>$\+::\+\_\+iterator$<$ o\+K, o\+V $>$}, 
+		\hyperpage{5}
+  \item {bst$<$ K, V, C\+O $>$\+::node}, \hyperpage{22}
+  \item {bst\+::\+\_\+iterator}
+    \subitem {\+\_\+iterator}, \hyperpage{6, 7}
+    \subitem {operator!=}, \hyperpage{7, 8}
+    \subitem {operator$<$$<$}, \hyperpage{10}
+    \subitem {operator$\ast$}, \hyperpage{8}
+    \subitem {operator++}, \hyperpage{8, 9}
+    \subitem {operator-\/$>$}, \hyperpage{9}
+    \subitem {operator==}, \hyperpage{10}
+  \item {bst\+::node}
+    \subitem {depth}, \hyperpage{25}
+    \subitem {find\+Lowest}, \hyperpage{25}
+    \subitem {find\+Upper}, \hyperpage{25, 26}
+    \subitem {node}, \hyperpage{23, 24}
+    \subitem {rightmost}, \hyperpage{26}
+
+  \indexspace
+
+  \item {cbegin}
+    \subitem {bst}, \hyperpage{15}
+  \item {cend}
+    \subitem {bst}, \hyperpage{15}
+
+  \indexspace
+
+  \item {depth}
+    \subitem {bst\+::node}, \hyperpage{25}
+
+  \indexspace
+
+  \item {emplace}
+    \subitem {bst}, \hyperpage{16}
+  \item {end}
+    \subitem {bst}, \hyperpage{16}
+  \item {erase}
+    \subitem {bst}, \hyperpage{17}
+  \item {erase\+\_\+node}
+    \subitem {bst}, \hyperpage{17}
+
+  \indexspace
+
+  \item {find}
+    \subitem {bst}, \hyperpage{17, 18}
+  \item {find\+Lowest}
+    \subitem {bst\+::node}, \hyperpage{25}
+  \item {find\+Upper}
+    \subitem {bst\+::node}, \hyperpage{25, 26}
+
+  \indexspace
+
+  \item {get\+\_\+root}
+    \subitem {bst}, \hyperpage{21}
+
+  \indexspace
+
+  \item {insert}
+    \subitem {bst}, \hyperpage{18}
+  \item {iterator}
+    \subitem {bst}, \hyperpage{13}
+
+  \indexspace
+
+  \item {max\+\_\+depth}
+    \subitem {bst}, \hyperpage{19}
+
+  \indexspace
+
+  \item {node}
+    \subitem {bst\+::node}, \hyperpage{23, 24}
+  \item {node\+\_\+depth}
+    \subitem {bst}, \hyperpage{19}
+
+  \indexspace
+
+  \item {operator!=}
+    \subitem {bst\+::\+\_\+iterator}, \hyperpage{7, 8}
+  \item {operator$<$$<$}
+    \subitem {bst}, \hyperpage{21}
+    \subitem {bst\+::\+\_\+iterator}, \hyperpage{10}
+  \item {operator$\ast$}
+    \subitem {bst\+::\+\_\+iterator}, \hyperpage{8}
+  \item {operator++}
+    \subitem {bst\+::\+\_\+iterator}, \hyperpage{8, 9}
+  \item {operator-\/$>$}
+    \subitem {bst\+::\+\_\+iterator}, \hyperpage{9}
+  \item {operator=}
+    \subitem {bst}, \hyperpage{19, 20}
+  \item {operator==}
+    \subitem {bst\+::\+\_\+iterator}, \hyperpage{10}
+  \item {operator[]}
+    \subitem {bst}, \hyperpage{20, 21}
+
+  \indexspace
+
+  \item {rightmost}
+    \subitem {bst\+::node}, \hyperpage{26}
+
+  \indexspace
+
+  \item {Trash/iterators.\+h}, \hyperpage{27}
+  \item {Trash/node.\+h}, \hyperpage{27}
+
+\end{theindex}

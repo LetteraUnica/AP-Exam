@@ -5,101 +5,129 @@
 #include <algorithm>
 #include <vector>
 #include <fstream>
+#include <random>
 #include "../include/bst.h"
 
-/**
- * \brief Creates a random vector of keys from 0 to v.size()-1
- * \tparam U Key type
- * \param v Vector
- */
+// Shuffles a vector
+template<typename I>
+void shuffle(I begin, I end) {
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+	std::shuffle(begin, end, std::default_random_engine(seed));
+}
+
+// Fills a vector with randomly generated keys
 template<typename U>
 void create_keys(std::vector<U>* v) {
-    for(int i=0; i<v->size(); i++) {
-        v->at(i) = i;
-        }
-    std::shuffle(v->begin(), v->end());
-}
-
-/**
- * \brief Fills a container with N randomly generated nodes
- * \tparam T Type of the container
- * \param container to be filled (must implement a emplace function like in std::map)
- * \param N Number of nodes to put in the container
- */
-template<typename T>
-void fill(T* container, int N) {
-	auto* keys = new std::vector<int>(N);
-    create_keys(keys);
-    for(auto i=0; i<N; i++) 
-        container->emplace(keys->at(i), i);
-}
-
-/**
- * \brief Tests the time to find N nodes in a container
- * \tparam T Type of the container
- * \param container to test (must implement a find function like in std::map)
- * \param N Number of nodes to find
- * \param trials Number of times the test is executed default=10
- * \return (double) Average time taken for one trial in microseconds
- */
-template<typename T>
-double test(T* container, int N, int trials = 10) {
-
-    double time = 0.;
-    for(int i=0; i<trials; ++i) {
-        
-        auto start = std::chrono::steady_clock::now();
-        for(int j=0; j<N; ++j)
-            (void)container->find(j);
-        auto end = std::chrono::steady_clock::now();
-
-        time += std::chrono::duration_cast<std::chrono::nanoseconds> (end - start).count();
+    for(auto i=0lu; i<v->size(); i++) {
+        v->at(i) = (U)(i*1.4 + 3.32);
     }
-    return time / (double)trials / 1000;
+    shuffle(v->begin(), v->end());
+}
+
+// Fills a container with randomly generated keys
+template<typename T, typename I>
+void fill(T* container, I begin, I end, bool balance=false) {
+    while(begin!=end) {
+        container->insert(std::make_pair(*begin, 0));
+        ++begin;
+    }
+    if(balance) {
+        container->balance();
+    }
+}
+
+// Times a container with increasing values of its size
+template<typename T, typename U>
+void test(T* container, std::vector<U>* keys, std::string fname, const bool balance=false, int ntrials = 50) {
+    std::ofstream f;
+    int step=100;
+    
+    f.open(fname);
+    f << "# Time to find " << step << " elements in a container with increasing values of its size\n";
+    f << "# Size / time\n";
+    
+    for (int n=step; n<keys->size(); n+=step) {
+        f << n << " ";
+        fill(container, keys->begin()+n-step, keys->begin()+n, balance);
+        shuffle(keys->begin(), keys->begin() + n);
+        auto start = std::chrono::high_resolution_clock::now();
+        
+        for(int trial=0; trial<ntrials; ++trial) {
+            for(int j=0; j<step; ++j) {
+                container->find((*keys)[j]);
+            }           
+        }
+
+        auto end = std::chrono::high_resolution_clock::now();
+        double time = std::chrono::duration_cast<std::chrono::nanoseconds> (end - start).count();
+        f << time/double(ntrials) << "\n";
+    }
+    f.close();
 } 
 
-int main(int argc, char* argv[])
-{
-	int N = 10000;
-	auto* map_ii = new std::map<int, int>{};
-	auto* u_map_ii = new std::unordered_map<int, int>{};
-    auto* map_di = new std::map<double, int>{};
-    auto* u_map_di = new std::unordered_map<int, int>{};
-    auto* map_dd = new std::map<int, int>{};
-    auto* u_map_dd = new std::unordered_map<int, int>{};
-    auto* bst_ii = new bst<int, int>{};
-    auto* bst_di = new bst<int, int>{};
-    auto* bst_dd = new bst<int, int>{};
 
-    std::cout << "Filling containers with " << N << " elements\n" << std::endl;
-    fill(u_map_ii, N);
-    fill(map_ii, N);
-    fill(u_map_di, N);
-    fill(map_di, N);
-    fill(u_map_dd, N);
-    fill(map_dd, N);
-    fill(bst_ii, N);
-    fill(bst_di, N);
-    fill(bst_dd, N);
-    
-    std::string name = "results.txt";
-    
+template<typename T, typename I>
+void nb_fill(T* container, I begin, I end) {
+    while(begin!=end) {
+        container->insert(std::make_pair(*begin, 0));
+        ++begin;
+    }
+}
+
+template<typename T, typename U>
+void nb_test(T* container, std::vector<U>* keys, std::string fname, int ntrials = 10) {
     std::ofstream f;
-    f.open(name);
+    int step=100;
+    
+    f.open(fname);
+    f << "# Time to find " << step << " elements in a container with increasing values of its size\n";
+    f << "# Size / trial1 / ... / trialN\n";
+    
+    for (int n=step; n<keys->size(); n+=step) {
+        f << n << " ";
+        nb_fill(container, keys->begin()+n-step, keys->begin()+n);
 
-    f << "# map=std::map, u_map=std::unordered_map\n";
-    f << "# <K, V> =  K: type of key V: type of value\n#\n";
-    f << "# Time[us] to find " << N << " elements in various containers\n";
-    f << "\t\t<int, int>\t<double, int>\t<double, double>\n";
-    f << "map\t\t" << test(map_ii, N) << "\t\t" << test(map_di, N) << "\t\t" << test(map_dd, N) << "\n";
-    f << "u_map\t" << test(u_map_ii, N) << "\t\t" << test(u_map_di, N) << "\t\t" << test(u_map_dd, N) << "\n";
+        shuffle(keys->begin(), keys->begin() + n);
+        auto start = std::chrono::high_resolution_clock::now();
+        
+        for(int trial=0; trial<ntrials; ++trial) {
+            for(int j=0; j<step; ++j) {
+                container->find(keys->at(j));
+            }           
+        }
 
-    std::cout << "Time[us] to find " << N << " elements in various containers\n";
-    std::cout << "\t\t<int, int>\t<double, int>\t<double, double>\n";
-    std::cout << "map\t" << test(map_ii, N) << "\t" << test(map_di, N) << "\t" << test(map_dd, N) << std::endl;
-    std::cout << "u_map\t" << test(u_map_ii, N) << "\t" << test(u_map_di, N) << "\t" << test(u_map_dd, N) << std::endl;
-    std::cout << "bst\t" << test(bst_ii, N) << "\t" << test(bst_di, N) << "\t" << test(bst_dd, N) << std::endl;
-
+        auto end = std::chrono::high_resolution_clock::now();
+        double time = std::chrono::duration_cast<std::chrono::nanoseconds> (end - start).count();
+        f << time/double(ntrials) << "\n";
+    }
     f.close();
+} 
+
+int main()
+{
+	const int N = 20000;
+	auto* map_i = new std::map<int, int>{};
+    auto* map_d = new std::map<double, int>{};
+	auto* u_map_i = new std::unordered_map<int, int>{};
+    auto* u_map_d = new std::unordered_map<double, int>{};
+    auto* bst_i = new bst<int, int>{};
+    auto* bst_d = new bst<double, int>{};
+    auto* bst_i_b = new bst<int, int>{};
+    auto* bst_d_b = new bst<double, int>{};
+
+    auto* keys_i = new std::vector<int>(N);
+    create_keys(keys_i);
+    auto* keys_d = new std::vector<double>(N);
+    create_keys(keys_d);
+
+    nb_test(map_i, keys_i, "results/map_int.txt");
+    nb_test(map_d, keys_d, "results/map_double.txt");
+    nb_test(u_map_i, keys_i, "results/u_map_int.txt");
+    nb_test(u_map_d, keys_d, "results/u_map_double.txt");
+    test(bst_i, keys_i, "results/bst_int.txt");
+    test(bst_d, keys_d, "results/bst_double.txt");
+    test(bst_i_b, keys_i, "results/bst_int_b.txt", true);
+    test(bst_d_b, keys_d, "results/bst_double_b.txt", true);
+
     return 0;
 }

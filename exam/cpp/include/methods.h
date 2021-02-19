@@ -98,12 +98,12 @@ std::pair<typename bst<K, V, CO>::iterator, bool> bst<K, V, CO>::insert(const pa
 		// x.key < here.key
 		if (comp(x.first, here->data.first))
 		{
-				here=here->left.get();
+			here=here->left.get();
 		}
 		// x.key > here.key
 		else if (comp(here->data.first, x.first))
 		{
-				here=here->right.get();
+			here=here->right.get();
 		}
 		// x.key == here.key
 		else
