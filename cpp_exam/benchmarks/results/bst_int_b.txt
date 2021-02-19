@@ -1,0 +1,11 @@
+# Time to find 100 elements in a container with increasing values of its size
+# Size / time
+100 8781.8
+200 10238.9
+300 10686.9
+400 10346.2
+500 11145.2
+600 11673.7
+700 11621.2
+800 11954.4
+900 12728.1
