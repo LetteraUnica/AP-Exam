@@ -15,7 +15,7 @@ void shuffle(I begin, I end) {
 	std::shuffle(begin, end, std::default_random_engine(seed));
 }
 
-// Fills a vector with randomly generated keys
+// Fills a vector with randomly generated values
 template<typename U>
 void create_keys(std::vector<U>* v) {
     for(auto i=0lu; i<v->size(); i++) {
@@ -26,19 +26,33 @@ void create_keys(std::vector<U>* v) {
 
 // Fills a container with randomly generated keys
 template<typename T, typename I>
-void fill(T* container, I begin, I end, bool balance=false) {
+void fill(T* container, I begin, I end) {
     while(begin!=end) {
         container->insert(std::make_pair(*begin, 0));
         ++begin;
     }
-    if(balance) {
-        container->balance();
-    }
 }
+
+// Times a container with fixed size
+template<typename T, typename U>
+double time(T* container, std::vector<U>* keys, int ntrials, int step) {
+    auto start = std::chrono::high_resolution_clock::now();
+    
+    for(int trial=0; trial<ntrials; ++trial) {
+        for(int j=0; j<step; ++j) {
+            volatile auto a = container->find((*keys)[j]);
+        }           
+    }
+
+    auto end = std::chrono::high_resolution_clock::now();
+    double time = std::chrono::duration_cast<std::chrono::nanoseconds> (end - start).count();
+    return time / double(ntrials);
+}
+
 
 // Times a container with increasing values of its size
 template<typename T, typename U>
-void test(T* container, std::vector<U>* keys, std::string fname, const bool balance=false, int ntrials = 50) {
+void test(T* container, std::vector<U>* keys, std::string fname, const bool balance=false, int ntrials = 10) {
     std::ofstream f;
     int step=100;
     
@@ -48,32 +62,19 @@ void test(T* container, std::vector<U>* keys, std::string fname, const bool bala
     
     for (int n=step; n<keys->size(); n+=step) {
         f << n << " ";
-        fill(container, keys->begin()+n-step, keys->begin()+n, balance);
+        fill(container, keys->begin()+n-step, keys->begin()+n);
+        if(balance)
+            container->balance();
         shuffle(keys->begin(), keys->begin() + n);
-        auto start = std::chrono::high_resolution_clock::now();
         
-        for(int trial=0; trial<ntrials; ++trial) {
-            for(int j=0; j<step; ++j) {
-                container->find((*keys)[j]);
-            }           
-        }
-
-        auto end = std::chrono::high_resolution_clock::now();
-        double time = std::chrono::duration_cast<std::chrono::nanoseconds> (end - start).count();
-        f << time/double(ntrials) << "\n";
+        f << time(container, keys, ntrials, step) << "\n";
     }
     f.close();
 } 
 
-
-template<typename T, typename I>
-void nb_fill(T* container, I begin, I end) {
-    while(begin!=end) {
-        container->insert(std::make_pair(*begin, 0));
-        ++begin;
-    }
-}
-
+// Same as test, I need this function because the map and unordered_map containers
+// don't have a balance() method so, calling the above test function would give a compile
+// error, even if the function would not call the balance() method.
 template<typename T, typename U>
 void nb_test(T* container, std::vector<U>* keys, std::string fname, int ntrials = 10) {
     std::ofstream f;
@@ -81,37 +82,26 @@ void nb_test(T* container, std::vector<U>* keys, std::string fname, int ntrials 
     
     f.open(fname);
     f << "# Time to find " << step << " elements in a container with increasing values of its size\n";
-    f << "# Size / trial1 / ... / trialN\n";
+    f << "# Size / time\n";
     
     for (int n=step; n<keys->size(); n+=step) {
         f << n << " ";
-        nb_fill(container, keys->begin()+n-step, keys->begin()+n);
+        fill(container, keys->begin()+n-step, keys->begin()+n);
 
         shuffle(keys->begin(), keys->begin() + n);
         auto start = std::chrono::high_resolution_clock::now();
         
-        for(int trial=0; trial<ntrials; ++trial) {
-            for(int j=0; j<step; ++j) {
-                container->find(keys->at(j));
-            }           
-        }
-
-        auto end = std::chrono::high_resolution_clock::now();
-        double time = std::chrono::duration_cast<std::chrono::nanoseconds> (end - start).count();
-        f << time/double(ntrials) << "\n";
+        f << time(container, keys, ntrials, step) << "\n";
     }
     f.close();
-} 
+}
 
 int main()
 {
 	const int N = 20000;
 	auto* map_i = new std::map<int, int>{};
-    auto* map_d = new std::map<double, int>{};
 	auto* u_map_i = new std::unordered_map<int, int>{};
-    auto* u_map_d = new std::unordered_map<double, int>{};
     auto* bst_i = new bst<int, int>{};
-    auto* bst_d = new bst<double, int>{};
     auto* bst_i_b = new bst<int, int>{};
     auto* bst_d_b = new bst<double, int>{};
 
@@ -121,13 +111,18 @@ int main()
     create_keys(keys_d);
 
     nb_test(map_i, keys_i, "results/map_int.txt");
-    nb_test(map_d, keys_d, "results/map_double.txt");
+    map_i->clear();
     nb_test(u_map_i, keys_i, "results/u_map_int.txt");
-    nb_test(u_map_d, keys_d, "results/u_map_double.txt");
+    u_map_i->clear();
     test(bst_i, keys_i, "results/bst_int.txt");
-    test(bst_d, keys_d, "results/bst_double.txt");
+    bst_i->clear();
     test(bst_i_b, keys_i, "results/bst_int_b.txt", true);
+    bst_i_b->clear();
     test(bst_d_b, keys_d, "results/bst_double_b.txt", true);
+    bst_d_b->clear();
+
+    keys_i->clear();
+    keys_d->clear();
 
     return 0;
 }

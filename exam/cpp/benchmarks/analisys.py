@@ -11,16 +11,16 @@ for f, l, c in zip(files, labels, colors):
     pl.plot(N, line, label=l, color=c)
 
 pl.xlabel("container size")
-pl.ylabel("time to find 100 keys[ms]")
-pl.title("int key type")
+pl.ylabel("time to find 100 keys[us]")
+pl.title("Comparison between containers")
 pl.legend()
-pl.savefig("timing_int.png")
+pl.savefig("container_comparison.png")
 pl.show()
 
 
-files = ["bst_int", "bst_int_b"]
-labels = ["bst", "balanced bst"]
-colors = ["tab:green", "tab:purple"]
+files = ["bst_int_b"]
+labels = ["balanced bst"]
+colors = ["tab:purple"]
 
 for f, l, c in zip(files, labels, colors):
     line = np.loadtxt("results/"+f+".txt")[:, 1] / 1000
@@ -31,8 +31,8 @@ for f, l, c in zip(files, labels, colors):
     pl.plot(N, line, "--", label=l+" double", color=c)
 
 pl.xlabel("container size")
-pl.ylabel("time to find 100 keys[ms]")
-pl.title("int and double key type")
+pl.ylabel("time to find 100 keys[us]")
+pl.title("Comparison between key types")
 pl.legend()
-pl.savefig("timing_double.png")
+pl.savefig("key_comparison.png")
 pl.show()
