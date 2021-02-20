@@ -28,7 +28,7 @@ void create_keys(std::vector<U>* v) {
 template<typename T, typename I>
 void fill(T* container, I begin, I end) {
     while(begin!=end) {
-        container->insert(std::make_pair(*begin, 0));
+        container->insert(std::make_pair(*begin, rand()));
         ++begin;
     }
 }
@@ -37,20 +37,18 @@ void fill(T* container, I begin, I end) {
 template<typename T, typename U>
 double time(T* container, std::vector<U>* keys, int ntrials, int step, int n) {
 
-    // Draw with replacement ntrials*step keys to find
-    auto* keys_to_find = new std::vector<U>(ntrials*step);
-    for (auto i = 0; i<ntrials*step; ++i)
-        keys_to_find->at(i) = keys->at(rand()%n);
-
+    // shuffle the keys from 0 to n
+    shuffle(keys->begin(), keys->begin() + n);
+    
+    // time it
     auto start = std::chrono::high_resolution_clock::now();
-    
-    for (auto i = 0; i<ntrials*step; ++i)
-        container->find((*keys_to_find)[i]);
-
+    for (auto i = 0; i<ntrials; ++i) {
+        for (auto i = 0; i<step; ++i)
+            container->find((*keys)[i]);
+    }
     auto end = std::chrono::high_resolution_clock::now();
-    double time = std::chrono::duration_cast<std::chrono::nanoseconds> (end - start).count();
-    
-    delete keys_to_find;
+    auto time = std::chrono::duration_cast<std::chrono::nanoseconds> (end - start).count();
+
     return time / double(ntrials);
 }
 
@@ -67,10 +65,13 @@ void test(T* container, std::vector<U>* keys, std::string fname, const bool bala
 
     for (auto n=step; n<keys->size(); n+=step) {
         f << n << " ";
+        // Add keys to container
         fill(container, keys->begin()+n-step, keys->begin()+n);
+        // We balance if we have to
         if(balance)
             container->balance();
 
+        // time the container to find ntrials*step keys
         f << time(container, keys, ntrials, step, n) << "\n";
     }
     f.close();
@@ -100,7 +101,7 @@ void nb_test(T* container, std::vector<U>* keys, std::string fname, int ntrials 
 int main()
 {
 	try {
-		const int N = 1000;
+		const int N = 20000;
 		auto* map_i = new std::map<int, int>{};
 		auto* u_map_i = new std::unordered_map<int, int>{};
 		auto* bst_i = new bst<int, int>{};
