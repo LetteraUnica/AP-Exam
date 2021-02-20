@@ -33,19 +33,24 @@ void fill(T* container, I begin, I end) {
     }
 }
 
-// Times a container with fixed size
+// Times a container by findind ntrials*step keys
 template<typename T, typename U>
-double time(T* container, std::vector<U>* keys, int ntrials, int step) {
+double time(T* container, std::vector<U>* keys, int ntrials, int step, int n) {
+
+    // Draw with replacement ntrials*step keys to find
+    auto* keys_to_find = new std::vector<U>(ntrials*step);
+    for (auto i = 0; i<ntrials*step; ++i)
+        keys_to_find->at(i) = keys->at(rand()%n);
+
     auto start = std::chrono::high_resolution_clock::now();
     
-    for(int trial=0; trial<ntrials; ++trial) {
-        for(int j=0; j<step; ++j) {
-            container->find((*keys)[j]);
-        }           
-    }
+    for (auto i = 0; i<ntrials*step; ++i)
+        container->find((*keys_to_find)[i]);
 
     auto end = std::chrono::high_resolution_clock::now();
     double time = std::chrono::duration_cast<std::chrono::nanoseconds> (end - start).count();
+    
+    delete keys_to_find;
     return time / double(ntrials);
 }
 
@@ -59,15 +64,14 @@ void test(T* container, std::vector<U>* keys, std::string fname, const bool bala
     f.open(fname);
     f << "# Time to find " << step << " elements in a container with increasing values of its size\n";
     f << "# Size / time\n";
-    
+
     for (auto n=step; n<keys->size(); n+=step) {
         f << n << " ";
         fill(container, keys->begin()+n-step, keys->begin()+n);
         if(balance)
             container->balance();
-        shuffle(keys->begin(), keys->begin() + n);
-        
-        f << time(container, keys, ntrials, step) << "\n";
+
+        f << time(container, keys, ntrials, step, n) << "\n";
     }
     f.close();
 } 
@@ -87,10 +91,8 @@ void nb_test(T* container, std::vector<U>* keys, std::string fname, int ntrials 
     for (auto n=step; n<keys->size(); n+=step) {
         f << n << " ";
         fill(container, keys->begin()+n-step, keys->begin()+n);
-
-        shuffle(keys->begin(), keys->begin() + n);
         
-        f << time(container, keys, ntrials, step) << "\n";
+        f << time(container, keys, ntrials, step, n) << "\n";
     }
     f.close();
 }
@@ -111,18 +113,18 @@ int main()
 		create_keys(keys_d);
 
 		nb_test(map_i, keys_i, "results/map_int.txt");
-		map_i->clear();
+        delete map_i;
 		nb_test(u_map_i, keys_i, "results/u_map_int.txt");
-		u_map_i->clear();
+        delete u_map_i;
 		test(bst_i, keys_i, "results/bst_int.txt");
-		bst_i->clear();
+        delete bst_i;
 		test(bst_i_b, keys_i, "results/bst_int_b.txt", true);
-		bst_i_b->clear();
+        delete bst_i_b;
 		test(bst_d_b, keys_d, "results/bst_double_b.txt", true);
-		bst_d_b->clear();
+        delete bst_d_b;
 
-		keys_i->clear();
-		keys_d->clear();
+        delete keys_i;
+        delete keys_d;
 
 		return 0;
 

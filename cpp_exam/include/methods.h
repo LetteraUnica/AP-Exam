@@ -10,10 +10,12 @@
 template <class K, class V, class CO>
 typename bst<K, V, CO>::node* bst<K, V, CO>::follow_key_order(const key_type& key, node* N) {
 
+    // if key is smaller than the current node's key, go left
 	if (comp(key,N->data.first)) {
         N=N->left.get();
     }
-    else {
+    // otherwise, go right
+    else if(comp(N->data.first,key)) {
         N=N->right.get();
     }
 
@@ -100,7 +102,7 @@ template <class K, class V, class CO>
 std::pair<typename bst<K, V, CO>::iterator, bool> bst<K, V, CO>::insert(const pair_type& x)
 {
 
-	std::cout << "l-value insert" << std::endl;
+	//std::cout << "l-value insert" << std::endl;
 
 	return _insert(x);
 
@@ -111,7 +113,7 @@ template<class K, class V, class CO>
 std::pair<typename bst<K, V, CO>::iterator, bool> bst<K, V, CO>::insert(pair_type&& x)
 {  
 
-	std::cout << "r-value insert" << std::endl;
+	//std::cout << "r-value insert" << std::endl;
 
     return _insert(std::move(x));
 
@@ -129,14 +131,14 @@ std::pair<typename bst<K, V, CO>::iterator, bool> bst<K, V, CO>::_insert(N&& x)
 		return std::make_pair<iterator, bool>(iterator{root.get()}, true);
     }
 
-    // Navigate through the tree until i find che correct parent node
+    // navigate through the tree until i find che correct parent node
 	node* here=root.get();
     node* parent=nullptr; 
 
     while (here){
         
         parent=here;
-        //if a node with the same key already exist, return the boolean saying that the new node was not created
+        // if a node with the same key already exist, return the boolean saying that the new node was not created
         if (!comp(x.first, here->data.first) && !comp(here->data.first, x.first))
         {
         	return std::make_pair<iterator, bool>(iterator{here}, false);
@@ -149,6 +151,7 @@ std::pair<typename bst<K, V, CO>::iterator, bool> bst<K, V, CO>::_insert(N&& x)
 
     }
 
+    // given the data and the suitable parent build a new node, to the parent's left or right according to the x's key 
     if (comp(x.first,parent->data.first)) 
     {
         parent->left.reset(new node{std::forward<N>(x), parent});
@@ -181,12 +184,12 @@ std::pair<typename bst<K, V, CO>::iterator, bool> bst<K, V, CO>::emplace(Types&&
 template<class K, class V, class CO>
 void bst<K, V, CO>::erase(const key_type &key){
 
-    iterator my{find(key)}; //have to return the one with no left child
+    iterator my{find(key)}; // have to return the one with no left child
     if(my == end()) {std::cout<<"key is not in the tree"<<std::endl;}
     else {
         node *here= my.here;
         if((here->left.get()== nullptr) && (here->right.get()== nullptr)){
-            std::cout<<"no child"<<std::endl;//if no child, erase the node
+            std::cout<<"no child"<<std::endl; // if no child, erase the node
             if(child_side(here->data.first)){
                 here->parent->right.release();
                 erase_node(here);
@@ -200,25 +203,25 @@ void bst<K, V, CO>::erase(const key_type &key){
         }
 
         if(here->left.get() && !(here->right.get())) {
-            std::cout<<"one right child"<<std::endl;//if no left child, substitute with left
+            std::cout<<"one right child"<<std::endl; // if no left child, substitute with left
             transplant(here->data.first, here->right.get()->data.first);
             return;
         }
         if(here->right.get()== nullptr &&(here->left.get()!= nullptr)) {
-            std::cout<<"one left child"<<std::endl;//if no left child, substitute with left
+            std::cout<<"one left child"<<std::endl; // if no left child, substitute with left
             transplant(here->data.first, here->left.get()->data.first);
             return;
         }
         else{
             node* smaller=here->right.get()->findLowest();
-            //set left child of smaller as left child of here
+            // set left child of smaller as left child of here
             if(child_side(smaller->data.first)){
                 smaller->left.release();
                 smaller->left.reset(here->left.get());
                 here->left.get()->parent = smaller;
             }
             else {
-                if (smaller->right.get() != nullptr && here->left.get() != smaller) {   //set right child of smaller as left child of smaller's parent
+                if (smaller->right.get() != nullptr && here->left.get() != smaller) { // set right child of smaller as left child of smaller's parent
                     smaller->right.get()->parent = smaller->parent;
                     smaller->parent->left.release();
                     smaller->parent->left.reset(smaller->right.get());
@@ -238,7 +241,7 @@ void bst<K, V, CO>::erase(const key_type &key){
                     smaller->left.release();
                     smaller->left.reset();
                 }
-                smaller->right.release();              //set smaller right child as right child of there
+                smaller->right.release(); //set smaller right child as right child of there
                 smaller->right.reset(here->right.get());
             }
 
@@ -260,7 +263,7 @@ void bst<K, V, CO>::erase(const key_type &key){
                     here->parent->left.reset(smaller);
                 }
                 smaller->parent=here->parent;
-                erase_node(here);                  //release parent
+                erase_node(here); //release parent
                 return;
             }
         }
@@ -274,7 +277,7 @@ void bst<K, V, CO>::erase(const key_type &key){
 template<class K, class V, class CO>
 void bst<K, V, CO>::transplant(const key_type& x,const key_type& y) {
     iterator one{find(x)};
-    iterator two{find(y)};//have to return the one with no left child
+    iterator two{find(y)}; //have to return the one with no left child
     node* here_one = one.here;
     node* here_two = two.here;
     if(here_one->parent== nullptr){
@@ -294,7 +297,7 @@ void bst<K, V, CO>::transplant(const key_type& x,const key_type& y) {
 template<class K, class V, class CO>
 void bst<K, V, CO>::new_child(const key_type& x,const key_type& y,bool side) {
     iterator one{find(x)};
-    iterator two{find(y)};//have to return the one with no left child
+    iterator two{find(y)}; //have to return the one with no left child
     node* here_one = one.here;
     node* here_two = two.here;
     if(!side){
@@ -342,7 +345,7 @@ void bst<K, V, CO>::balance() {
     std::vector<pair_type> v;
     iterator first{this->begin()};
     iterator last{this->end()};
-    if(first==last)//tree is Empty
+    if(first==last) //tree is Empty
 		return;
     while(first!=last) {
         v.push_back(first.here->data);
