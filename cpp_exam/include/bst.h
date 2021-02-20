@@ -33,10 +33,11 @@ class bst
     using value_type=V;
     using reference=V&;
 
-    struct node; //!< Struct holding the bst node type
-                 //!< bst node type is defined in the header node.h
+	/** Struct holding the bst node type */
+    struct node; 
 
-    std::unique_ptr<node> root; //!< Unique pointer to the root node
+	/** Unique pointer to the root node */
+    std::unique_ptr<node> root;
 
     /**
      * \brief Function needed to avoid code duplication between the two insert fuctions
@@ -88,13 +89,16 @@ class bst
 
 
     public:
+		/** Comparison operator */
+        CO comp;
 
-        CO comp; //!< Comparison operator
-
-
+		/**
+		 * \brief Template class holding the bst iterator type
+		 * \tparam oK    Key type
+		 * \tparam oV    Value type
+		 */
         template<class oK, class oV>
-        class _iterator; //!< Template class holding the bst iterator type
-                         //!< bst iterator is defined in the header iterator.h
+        class _iterator;
 
         using iterator=_iterator<const K,V>;
         using const_iterator=_iterator<const K, const V>;
@@ -322,14 +326,15 @@ class bst
 
 template<class K, class V, class CO>
 struct bst<K,V,CO>::node {
-
-    pair_type data; //!< pair of a key and a value, stored in the element of the bst object
-
-    std::unique_ptr<node> left; //!< Unique pointer to the left child of the current element
-
-    std::unique_ptr<node> right; //!< Unique pointer to the right child of the current element
-
-    node* parent; //!< Pointer to the parent node of the current element
+	
+	/** key and a value pair, stored in the node of the bst */
+    pair_type data;
+	/** Unique pointer to the left child of the current node */
+    std::unique_ptr<node> left;
+	/** Unique pointer to the right child of the current node */
+    std::unique_ptr<node> right;
+	/** Pointer to the parent node of the current node */
+    node* parent;
 
     /**
      * \brief Default constructor of node struct
@@ -413,8 +418,9 @@ template<class oK, class oV>
 class bst<K,V,CO>::_iterator {
 
     friend class bst; //!< So that bst has access to private _iterator's member when needed
-
-    node* here; //!< Pointer to the current element of the bst object
+	
+	/** Pointer to the current element of the bst object */
+    node* here;
 
     public:
 

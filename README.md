@@ -8,7 +8,7 @@
 
 The project is divided into a series of directories in order to keep it as tidy as possible. 
 
-The *AP-Exam* repository directly contains four files (LICENSE, Makefile, this README.md file and a Report) and two directories (cpp_exam and python_exam).
+The *AP-Exam* repository directly contains four files (LICENSE, Makefile, this README.md file and a Report) and two directories (cpp_exam and python_exam). Typing make documentation will create the documentation for the project using doxygen
 
 ##### Report
 
@@ -24,9 +24,7 @@ There is an *include* directory, storing the headers `bst.h` and `methods.h`. Th
 
 A *trials* directory is also present, containing a `.cpp` file called `trials.cpp` in which the group tested the implemented tree.
 
-Finally, the *benchmark* directory contains a series of files related to the benchmarking of the BST.
-
-
+Finally, the *benchmark* directory contains a series of files related to the benchmarking of the BST. executing the `test.sh` script found in this directory will run the benchmark on your machine and plot the results.
 
 #### Directory: *python_exam*
 
