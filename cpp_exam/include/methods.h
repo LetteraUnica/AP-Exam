@@ -341,21 +341,26 @@ void bst<K, V, CO>::erase_node(bst<K, V, CO>::node *N) {
 
 template<class K, class V, class CO>
 void bst<K, V, CO>::balance() {
-
+    //initialize a vector of nodes
     std::vector<pair_type> v;
+    //get the iterators pointing to the first and last element of the tree
     iterator first{this->begin()};
     iterator last{this->end()};
-    if(first==last) //tree is Empty
-		return;
+    //it they coincide, the tree is empty, so no need to balance
+    if(first==last)
+        return;
+    //populate the vectors with all the nodes of the tree
     while(first!=last) {
         v.push_back(first.here->data);
         ++first;
     }
-        
-	clear();
+    //clear the tree
+    clear();
+    //create from the vector a new balanced tree
     newbalancedtree(v, 0, v.size());
 
 }
+
 
 // build a balanced tree from an vector of node
 template<class K, class V, class CO>

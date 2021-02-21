@@ -2,4 +2,4 @@
 mkdir results
 c++ -O3 -std=c++14 -Wall -Wextra -o benchmark.x benchmark.cc
 ./benchmark.x
-python analisys.py
+python3 analisys.py

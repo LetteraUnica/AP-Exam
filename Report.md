@@ -290,7 +290,7 @@ We compared the performance of our binary search tree to the c++ standard librar
 
 The results are consistent with our expectations, the unordered_map shows an approximately constant behaviour and is the fastest container, while the other containers show a logatithmic behaviour, with the balanced bst faster than the unbalanced one.
 
-We also compared double key types with int key types, we expect that the tree with double keys will take longer to find the same amount of keys, this is confirmed from the graph below, however we expected a bigger difference between the key types.
+We also compared double key types with int key types, we expect that the tree with double keys will take longer to find the same amount of keys, this is confirmed from the graph below.
 
 ![key_comparison](./cpp_exam/benchmarks/results/key_comparison.png)
 

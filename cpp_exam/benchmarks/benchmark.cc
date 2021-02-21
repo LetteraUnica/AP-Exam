@@ -79,7 +79,7 @@ void test(T* container, std::vector<U>* keys, std::string fname, const bool bala
 
 // Same as test, I need this function because the map and unordered_map containers
 // don't have a balance() method so, calling the above test function would give a compile
-// error, even if the function would not call the balance() method.
+// error, even if the test function would not call the balance() method.
 template<typename T, typename U>
 void nb_test(T* container, std::vector<U>* keys, std::string fname, int ntrials = 10) {
     std::ofstream f;
@@ -102,17 +102,20 @@ int main()
 {
 	try {
 		const int N = 20000;
+		// We allocate on the heap to avoid stack smashing 
 		auto* map_i = new std::map<int, int>{};
 		auto* u_map_i = new std::unordered_map<int, int>{};
 		auto* bst_i = new bst<int, int>{};
 		auto* bst_i_b = new bst<int, int>{};
 		auto* bst_d_b = new bst<double, int>{};
-
+		
+		// Create the keys
 		auto* keys_i = new std::vector<int>(N);
 		create_keys(keys_i);
 		auto* keys_d = new std::vector<double>(N);
 		create_keys(keys_d);
-
+		
+		// Test the containers
 		nb_test(map_i, keys_i, "results/map_int.txt");
         delete map_i;
 		nb_test(u_map_i, keys_i, "results/u_map_int.txt");
@@ -123,7 +126,8 @@ int main()
         delete bst_i_b;
 		test(bst_d_b, keys_d, "results/bst_double_b.txt", true);
         delete bst_d_b;
-
+		
+		// Release the memory
         delete keys_i;
         delete keys_d;
 

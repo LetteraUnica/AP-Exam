@@ -78,7 +78,12 @@ class bst
      */
     void new_child(const key_type& x,const key_type& y,bool side);
 
-    // STILL TO COMMENT!!!
+    /**
+     * \brief Creates recursively from a vector of nodes a new balanced tree
+     * \param v A vector of nodes
+     * \param first First element of the portion of the vector considered for the insertion
+     * \param last  Last element of the portion of the vector considered for the insertion
+     */
     void newbalancedtree(std::vector<pair_type>& v, int first, int last);
 
     /**

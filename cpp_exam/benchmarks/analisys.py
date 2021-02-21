@@ -1,6 +1,8 @@
 import numpy as np
 import pylab as pl
 
+
+# Container comparison plot
 files = ["map_int", "u_map_int", "bst_int", "bst_int_b"]
 labels = ["map", "unordered map", "bst", "balanced bst"]
 colors = ["tab:cyan", "tab:orange", "tab:green", "tab:purple"]
@@ -18,6 +20,7 @@ pl.savefig("results/container_comparison.png")
 pl.show()
 
 
+# Key types comparison plot
 files = ["bst_int_b"]
 labels = ["balanced bst"]
 colors = ["tab:purple"]
