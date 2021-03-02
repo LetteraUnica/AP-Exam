@@ -8,17 +8,17 @@
 
 The project is divided into a series of directories in order to keep it as tidy as possible. 
 
-The *AP-Exam* repository directly contains four files (LICENSE, Makefile, this README.md file and a Report) and two directories (cpp_exam and python_exam). Typing make documentation will create the documentation for the project using doxygen
+The *AP-Exam* repository directly contains four files (LICENSE, this README.md file and a Report) and two directories (cpp_exam and python_exam). 
 
 ##### Report
 
-The Report.md file contains the description of the work done by this group.
+The *Report.md* file contains the description of the work done by this group.
 
 
 
 #### Directory: *cpp_exam*
 
-The *cpp-exam* directory contains the Binary Search Tree project.
+The *cpp-exam* directory contains the Binary Search Tree project. The *cpp_exam* directory contains the Binary Search Tree project and a `makefile` used to compile the codes. Typing `make documentation` will create the documentation for the project using doxygen.
 
 There is an *include* directory, storing the headers `bst.h` and `methods.h`. The former contains the code related to the implementation of the BST node and the iterator class, plus the declaration of all the needed functions (the smallest ones are also defined here), while the latter contains all the needed definitions.
 

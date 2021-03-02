@@ -1,5 +1,5 @@
 /**
- * \file node.h
+ * \file bst.h
  * \author
  * \brief header containing the implementation of the binary search tree
 */
@@ -31,7 +31,7 @@ class bst
 	using pair_type=std::pair<const K,V>;
 	using key_type=K;
     using value_type=V;
-    using reference=V&;
+    using reference=value_type&;
 
 	/** Struct holding the bst node type */
     struct node; 
@@ -55,7 +55,7 @@ class bst
      * \param N                             current node whose key is to be compared with 'key'
      * \return node*                        The function returns a pointer to the node that satisfay the rules of comparison between keys
      */ 
-    node* follow_key_order(const key_type& key, node* N);
+    node* follow_key_order(const key_type& key, node* N) const noexcept;
 
     /**
      * \brief Recursive function needed for the copy semantics
@@ -64,14 +64,14 @@ class bst
     void clone(const std::unique_ptr<node>& node_to_copy);
 
     /**
-     * \brief Substitute a node with only one child with its child,taking their respective key as input
+     * \brief Substitutes a node with only one child with its child,taking their respective key as input
      * \param x     Key of the node to be erased
      * \param y     Key of the substitute node
      */
     void transplant(const key_type& x,const key_type& y);
 
     /**
-     * \brief Set a node as the child of a given parent node, on the given side.
+     * \brief Sets a node as the child of a given parent node, on the given side.
      * \param x     Key of the parent to be erased
      * \param y     Key of the child node
      * \param side  Side of the child node
@@ -87,13 +87,21 @@ class bst
     void newbalancedtree(std::vector<pair_type>& v, int first, int last);
 
     /**
-     * \brief Erase a node from the tree
+     * \brief Erases a node from the tree
      * \param N     pointer to a node of the tree
      */
     void erase_node(node* N);
 
+    /**
+     * \brief Returns key of the node pointed to by a const_iterator
+     * \param it      const_iterator pointing to a node
+     * 
+     * Only used as a helper in for loops for printing bidimensional representation of the tree
+     */
+    const key_type& key(typename bst<K, V, CO>::const_iterator it) const noexcept;
 
     public:
+
 		/** Comparison operator */
         CO comp;
 
@@ -115,7 +123,7 @@ class bst
 
         /**
          * \brief Custom constructor of bst class
-         * \param pair  contains the key and value of the first node with which to build the tree (root)
+         * \param pair      contains the key and value of the first node with which to build the tree (root)
          */
         explicit bst(const pair_type& pair) { root.reset(new node{pair}); }
 
@@ -133,7 +141,7 @@ class bst
 
         /**
          * \brief Copy constructor of bst class
-         * \param to_copy  bst object to be copied
+         * \param to_copy      bst object to be copied
          */
         bst(const bst& to_copy) { clone(to_copy.root); }
 
@@ -146,18 +154,18 @@ class bst
 
         /**
          * \brief Move constructor of bst class
-         * \param move_from  bst object to be moved
+         * \param move_from     bst object to be moved
          *
          * Creates a bst by moving the root of the input bst
          */
-        bst(bst&& move_from): root(std::move(move_from.root)) {}
+        bst(bst&& move_from) noexcept : root(std::move(move_from.root)) {}
 
         /**
          * \brief Move assignment of bst class
          * \param move_from     bst object to be moved
          * \return bst&         reference to moved binary search tree
          */
-        bst& operator=(bst&& move_from);
+        bst& operator=(bst&& move_from) noexcept;
 
         /**
          * \brief Inserts a new element in the tree
@@ -233,14 +241,14 @@ class bst
          * \param x             Key to be found
          * \return iterator     pointing to the node with that key if the key exists, otherwise it returns an iterator pointing to "nullptr"
          */
-        iterator find(const key_type& x);
+        iterator find(const key_type& x) noexcept;
 
         /**
          * \brief Finds a node in the bst given a key
          * \param x                   Key to be found
          * \return const_iterator     pointing to the node with that key if the key exists, otherwise it returns a const_iterator pointing to "nullptr"
          */
-        const_iterator find(const key_type& x) const; 
+        const_iterator find(const key_type& x) const noexcept; 
 
         /**
          * \brief Overload of the put-to operator, which lets the user print the tree in ascending order of the keys
@@ -250,11 +258,13 @@ class bst
          */
         friend
         std::ostream &operator<<(std::ostream &os, const bst &x) {
-            for (auto p = x.cbegin(); p != x.cend(); ++p) {
-                os << p << "\n";
-            }
+
+            for (auto p = x.cbegin(); p != x.cend(); ++p) 
+                os << p;
+        
             os << std::endl;
             return os;
+
         }
 
         /**
@@ -276,7 +286,7 @@ class bst
          * \return value_type&  If the key exists returns a reference to the associated value. Otherwise it adds a new node containing the input key and the default
          * value and returns a reference to the value
          */
-        reference operator[](const key_type& x);
+        reference operator[](const key_type& x) noexcept;
 
         /**
          * \brief Overload of the [] operator, which lets the user find a value given the key
@@ -284,10 +294,10 @@ class bst
          * \return value_type&  If the key exists returns a reference to the associated value. Otherwise it adds a new node containing the input key and the default
          * value and returns a reference to the value
          */
-        reference operator[](key_type&& x);
+        reference operator[](key_type&& x) noexcept;
 
         /**
-         * \brief Erase a node with a given key from the tree
+         * \brief Erases a node with a given key from the tree
          * \param key    Key of the none to be erased
          */
         void erase(const key_type &key);
@@ -310,18 +320,47 @@ class bst
          * \param k     key value associated with the node whose depth is requested
          * \return      unsigned int storing the depth of the node identified by the key
          */
-        unsigned int node_depth(const key_type& k);
+        unsigned int node_depth(const key_type& k) const noexcept;
 
         /**
          * \brief Returns maximum depth of the binary search tree
          * \return      unsigned int storing the depth of the deeper node of the tree
          */
-        unsigned int max_depth();
+        unsigned int max_depth() const noexcept;
 
         /**
          * \brief Prints tree structure
          */
-        void print_2D();
+        friend
+        void print_bst(const bst& x, std::ostream &os=std::cout) {
+
+            // Traverse the tree following the key order:
+            // For each element, compute its depth and print
+            // as many spaces as the computed depth plus some
+            // extra spaces needed for deeper nodes in order
+            // not to print the to close to the others.
+            for (auto p = x.cbegin(); p != x.cend(); ++p) {
+                auto n_spaces=x.node_depth(x.key(p));
+                auto extra_spaces=n_spaces;
+
+                os << "\n"; 
+
+                while(n_spaces-1) {
+                    os << "     ";
+                    while(extra_spaces) {
+                        os << "     ";
+                        --extra_spaces;
+                    }
+                    --n_spaces;
+                }
+
+                os << p << "\n";
+
+            }
+
+            os << std::endl;
+
+        }
 
 };
 
@@ -380,7 +419,7 @@ struct bst<K,V,CO>::node {
      * \brief Finds the first right ancestor of the current node
      * \return node*    pointer to the first anchestor node which stands on the left of the current node
      */
-    node* findUpper() const {
+    node* findUpper() const noexcept {
 
         if(parent) {
             // The parent is the first right ancestor of current node if the latter is its 
@@ -396,10 +435,10 @@ struct bst<K,V,CO>::node {
     }
 
     /**
-     * \brief Compute the depth of the current node in the tree 
+     * \brief Computes the depth of the current node in the tree 
      * \return Depth    unsigned int storing the depth of the current node in the tree
      */
-    unsigned int depth(unsigned int&& Depth=1) {
+    unsigned int depth(unsigned int&& Depth=1) const noexcept {
 
         if(parent) {
             // If current node has a parent, depth increases by one
@@ -422,14 +461,15 @@ template<class K, class V, class CO>
 template<class oK, class oV>
 class bst<K,V,CO>::_iterator {
 
-    friend class bst; //!< So that bst has access to private _iterator's member when needed
+    /** To make sure bst has access to private _iterator's member when needed */
+    friend class bst; 
 	
 	/** Pointer to the current element of the bst object */
     node* here;
 
     public:
 
-    	using value_type=std::pair<oK,oV>;
+    	using value_type=oV;
     	using reference=value_type&;
     	using pointer=value_type*;
     	using difference_type=std::ptrdiff_t;
@@ -479,7 +519,7 @@ class bst<K,V,CO>::_iterator {
          * 
          * Overloading of post-increment operator
          */
-	    _iterator operator++(int) {
+	    _iterator operator++(int) noexcept {
 
 	        auto old(*this);
 	        operator++();
@@ -506,14 +546,14 @@ class bst<K,V,CO>::_iterator {
          * 
          * Overloading of dereference operator
          */
-	    reference operator*() {return here->data;}
+	    reference operator*() const noexcept {return here->data.second;}
 
         /**
          * \brief Arrow operator 
          * 
          * Overloading of arrow operator
          */
-	    pointer operator->() {return &(*(*this));}
+	    pointer operator->() const noexcept {return &(*(*this));}
 
         /**
          * \brief Overload of the put-to operator, which lets the user print the node pointed to by the iterator
@@ -529,17 +569,6 @@ class bst<K,V,CO>::_iterator {
 
 };
 
-
-
-
-
-
-
-
-
 #include"methods.h"
-
-
-
 
 #endif //__BST_

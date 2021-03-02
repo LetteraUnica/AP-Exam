@@ -8,7 +8,7 @@
 //******************************************************
 
 template <class K, class V, class CO>
-typename bst<K, V, CO>::node* bst<K, V, CO>::follow_key_order(const key_type& key, node* N) {
+typename bst<K, V, CO>::node* bst<K, V, CO>::follow_key_order(const key_type& key, node* N) const noexcept {
 
     // if key is smaller than the current node's key, go left
 	if (comp(key,N->data.first)) {
@@ -102,18 +102,13 @@ template <class K, class V, class CO>
 std::pair<typename bst<K, V, CO>::iterator, bool> bst<K, V, CO>::insert(const pair_type& x)
 {
 
-	//std::cout << "l-value insert" << std::endl;
-
 	return _insert(x);
 
-	
 }
 
 template<class K, class V, class CO>
 std::pair<typename bst<K, V, CO>::iterator, bool> bst<K, V, CO>::insert(pair_type&& x)
 {  
-
-	//std::cout << "r-value insert" << std::endl;
 
     return _insert(std::move(x));
 
@@ -241,7 +236,7 @@ void bst<K, V, CO>::erase(const key_type &key){
                     smaller->left.release();
                     smaller->left.reset();
                 }
-                smaller->right.release(); //set smaller right child as right child of there
+                smaller->right.release(); // set smaller right child as right child of there
                 smaller->right.reset(here->right.get());
             }
 
@@ -270,14 +265,13 @@ void bst<K, V, CO>::erase(const key_type &key){
 
     }
 
-
 }
 
 
 template<class K, class V, class CO>
 void bst<K, V, CO>::transplant(const key_type& x,const key_type& y) {
     iterator one{find(x)};
-    iterator two{find(y)}; //have to return the one with no left child
+    iterator two{find(y)}; // have to return the one with no left child
     node* here_one = one.here;
     node* here_two = two.here;
     if(here_one->parent== nullptr){
@@ -297,7 +291,7 @@ void bst<K, V, CO>::transplant(const key_type& x,const key_type& y) {
 template<class K, class V, class CO>
 void bst<K, V, CO>::new_child(const key_type& x,const key_type& y,bool side) {
     iterator one{find(x)};
-    iterator two{find(y)}; //have to return the one with no left child
+    iterator two{find(y)}; // have to return the one with no left child
     node* here_one = one.here;
     node* here_two = two.here;
     if(!side){
@@ -341,22 +335,22 @@ void bst<K, V, CO>::erase_node(bst<K, V, CO>::node *N) {
 
 template<class K, class V, class CO>
 void bst<K, V, CO>::balance() {
-    //initialize a vector of nodes
+    // initialize a vector of nodes
     std::vector<pair_type> v;
-    //get the iterators pointing to the first and last element of the tree
+    // get the iterators pointing to the first and last element of the tree
     iterator first{this->begin()};
     iterator last{this->end()};
-    //it they coincide, the tree is empty, so no need to balance
+    // it they coincide, the tree is empty, so no need to balance
     if(first==last)
         return;
-    //populate the vectors with all the nodes of the tree
+    // populate the vectors with all the nodes of the tree
     while(first!=last) {
         v.push_back(first.here->data);
         ++first;
     }
-    //clear the tree
+    // clear the tree
     clear();
-    //create from the vector a new balanced tree
+    // create from the vector a new balanced tree
     newbalancedtree(v, 0, v.size());
 
 }
@@ -391,7 +385,7 @@ void bst<K, V, CO>::clear()
 //******************************************
 
 template <class K, class V, class CO>
-typename bst<K, V, CO>::iterator bst<K, V, CO>::find(const key_type& x) {
+typename bst<K, V, CO>::iterator bst<K, V, CO>::find(const key_type& x) noexcept {
 
 	// get pointer to the root
 	auto here=root.get();
@@ -417,7 +411,7 @@ typename bst<K, V, CO>::iterator bst<K, V, CO>::find(const key_type& x) {
 }
 
 template <class K, class V, class CO>
-typename bst<K, V, CO>::const_iterator bst<K, V, CO>::find(const key_type& x) const {
+typename bst<K, V, CO>::const_iterator bst<K, V, CO>::find(const key_type& x) const noexcept {
 
 	// get pointer to the root
 	auto here=root.get();
@@ -448,7 +442,7 @@ typename bst<K, V, CO>::const_iterator bst<K, V, CO>::find(const key_type& x) co
 //***********************************************************
 
 template <class K, class V, class CO>
-typename bst<K, V, CO>::reference bst<K, V, CO>::operator[](const key_type& x)
+typename bst<K, V, CO>::reference bst<K, V, CO>::operator[](const key_type& x) noexcept
 {	
 	iterator node_found = find(x);
 	if(node_found.here)
@@ -459,7 +453,7 @@ typename bst<K, V, CO>::reference bst<K, V, CO>::operator[](const key_type& x)
 }
 
 template <class K, class V, class CO>
-typename bst<K, V, CO>::reference bst<K, V, CO>::operator[](key_type&& x)
+typename bst<K, V, CO>::reference bst<K, V, CO>::operator[](key_type&& x) noexcept
 {
 	iterator node_found = find(std::move(x));
 	if (node_found.here)
@@ -507,7 +501,7 @@ bst<K, V, CO>& bst<K, V, CO>::operator=(const bst<K, V, CO>& to_copy) {
 //*****************************************************
 
 template<class K, class V, class CO>
-bst<K, V, CO>& bst<K, V, CO>::operator=(bst<K, V, CO>&& move_from) {
+bst<K, V, CO>& bst<K, V, CO>::operator=(bst<K, V, CO>&& move_from) noexcept {
 
 	// To move the tree, move its root to new location (current root location)
     root=std::move(move_from.root);
@@ -520,7 +514,7 @@ bst<K, V, CO>& bst<K, V, CO>::operator=(bst<K, V, CO>&& move_from) {
 //************************************************
 
 template<class K, class V, class CO>
-unsigned int bst<K, V, CO>::node_depth(const key_type& k) { 
+unsigned int bst<K, V, CO>::node_depth(const key_type& k) const noexcept { 
 
 	// Find node (iterator pointing to the node) with requested key; 
     auto it=find(k);
@@ -534,7 +528,7 @@ unsigned int bst<K, V, CO>::node_depth(const key_type& k) {
 //***********************************************
 
 template<class K, class V, class CO>
-unsigned int bst<K, V, CO>::max_depth() { 
+unsigned int bst<K, V, CO>::max_depth() const noexcept { 
 
 	// Initialize maximum depth with the depth of the "smallest" node of the tree
 	auto max=node_depth(cbegin().here->data.first);
@@ -549,49 +543,15 @@ unsigned int bst<K, V, CO>::max_depth() {
 
 }
 
-//************************************************
-//******************PRINT_2D**********************
-//************************************************
+//*******************************************
+//******************KEY**********************
+//*******************************************
 
 template<class K, class V, class CO>
-void bst<K, V, CO>::print_2D() {
+const typename bst<K, V, CO>::key_type& bst<K, V, CO>::key(typename bst<K, V, CO>::const_iterator it) const noexcept { 
 
-	// Traverse the tree following the key order:
-	// For each element, compute its depth and print
-	// as many spaces as the computed depth plus some
-	// extra spaces needed for deeper nodes in order
-	// not to print the to close to the others.
-    for (auto p = cbegin(); p != cend(); ++p) {
-        auto n_spaces=p.here->depth();
-        auto extra_spaces=n_spaces;
-
-        std::cout << "\n"; 
-
-        while(n_spaces-1) {
-            std::cout << "     ";
-            while(extra_spaces) {
-                std::cout << "     ";
-                --extra_spaces;
-            }
-              --n_spaces;
-        }
-
-        std::cout << p << "\n";
-
-    }
-
-    std::cout << std::endl;
+    return it.here->data.first;
 
 }
-
-
-
-
-
-
-
-
-
-
 
 #endif //__METHODS_

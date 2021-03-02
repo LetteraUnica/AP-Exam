@@ -22,8 +22,8 @@ As part of this class there are also the default node constructor and destructor
 
 Finally, three member functions were added:
 
-- `node* findLowest()`:  function built to find the leftmost node belonging to the subtree which has the current node as the root. This function is of utmost importance in the development of the class `_iterator`.
-- `node* findUpper()`:  function built to find the first right ancestor of a given node, that is a previously inserted node with the first key larger than the given one. Also `findUpper()` holds a very important role in the implementations of the `_iterator` class.
+- `node* findLowest()noexcept`:  function built to find the leftmost node belonging to the subtree which has the current node as the root. This function is of utmost importance in the development of the class `_iterator`.
+- `node* findUpper()const`:  function built to find the first right ancestor of a given node, that is a previously inserted node with the first key larger than the given one. Also `findUpper()` holds a very important role in the implementations of the `_iterator` class.
 - `unsigned int depth(unsigned int&& Depth=1)`: recursive function needed to compute the depth of a node in the tree.
 
 `node` was build as a nested class inside the private section of the larger `bst<K, V, CO>`: this choice seemed the most suitable since the BST node is a structure that should not be created nor accessed by the user at any time. There are ways to insert a node into the tree, but there should be no reason to create a BST node without creating a Binary Search Tree, or to access and change some of its important members, such as `left` and `write`.    
@@ -48,7 +48,7 @@ The private member `root` is used to identify the root node of the tree in a uni
 
 ## Member functions
 
-#### Insert
+#### *Insert*
 
 ```c++
 //private
@@ -65,7 +65,7 @@ Helper function:
 
 `_insert`: If the BST is empty this function insert the node as the root of the tree. Otherwise, it navigate through the tree until it finds a suitable parent node for the given one. It then compare the key given with the one of the found parent, and set the new node as a *left* or *right* child consequently. The pair key-double is passed to the constructor using `std::forward` to avoid code duplication as it passes variables as lvalue if we use the first `insert` function and as rvalue if we use the second. If during this process the function finds a node with the same key, it returns an iterator pointing to that node, paired with a *false* boolean. 
 
-####  Begin 
+####  *Begin* 
 
 ```c++
 //public
@@ -75,7 +75,7 @@ Helper function:
 
  This function is used to start iterations on the tree. It returns an iterator to the leftmost node, the one with the smallest key. 
 
-#### End
+#### *End*
 
 ```c++
 //public
@@ -85,7 +85,7 @@ Helper function:
 
 This function is used to finish an iteration on the tree. It returns an iterator pointing to one past the last element of the tree.
 
-#### Clear
+#### *Clear*
 
 ```c++
 //public
@@ -94,7 +94,7 @@ void clear();
 
 This function deletes the tree by resetting the `root`.
 
-#### Erase 
+#### *Erase* 
 
 ```c++
 //private 
@@ -120,7 +120,7 @@ Helper functions:
 
 `erase_node`: It takes a node as input, it reset to *nullptr* its *left*,*right* and *parent* pointers, and delete the data.
 
-#### Balance
+#### *Balance*
 
 ```c++
 //private
@@ -135,7 +135,7 @@ Helper function:
 
 `newbalancedtree`: this function takes as input an ordered vector of pair, and two int represent the index of the first and last element of the vector on which the function works.  It computes the median value of the vector considered , and it inserts it in the new tree (with the function `insert`), recalling itself recursively on the two remaining halves of the vector.
 
-#### Child_side
+#### *Child_side*
 
 ```c++
 //public
@@ -144,7 +144,7 @@ Helper function:
 
 This function takes as input a key of a node, and return a boolean: *false* if the node is a left node, *true* if it is a right node. It achieves so comparing the node pointer with the left and right node pointer of its parent node. 
 
-#### Find
+#### *Find*
 
 ```c++
 //public
@@ -154,7 +154,7 @@ This function takes as input a key of a node, and return a boolean: *false* if t
 
 This functions are called when the user wants to find a node in the BST with a given key. Of the two functions, the first returns an iterator which points to the node that have the given key, the latter returns a const iterator which also points to the given key. The functions follow the hierarchy of the keys, checking every node, until a match is found. If that key is not found, or the tree is empty, both functions will return `end()` or `cend()` respectively.
 
-#### Copy Semantic
+#### *Copy Semantic*
 
 ```c++
 //private
@@ -166,7 +166,7 @@ This functions are called when the user wants to find a node in the BST with a g
 
 Copy semantics is implemented as a copy constructor and the overload of the operator `=`. It is used to make a deep copy of a binary search tree, with the help of the private function `copy`, which recursively copies all the subtrees of a binary search tree given its root.
 
-#### Move Semantic
+#### *Move Semantic*
 
 ```c++
 //public
@@ -176,7 +176,7 @@ Copy semantics is implemented as a copy constructor and the overload of the oper
 
 Move semantics is implemented as a move constructor and the overload of the operator `=`. It is used to move the elements of a binary search tree into another tree, without copying them.
 
-#### Emplace
+#### *Emplace*
 
 ```c++
 //public
@@ -186,7 +186,7 @@ Move semantics is implemented as a move constructor and the overload of the oper
 
 This function is called when the user wants to insert a new element into the container constructed in-place.  It returns a pair of an iterator pointing to the inserted node and a bool which is true if a new node has been allocated, false if the node is already in the tree. It uses a template so that the user can simply pass two values to this function.
 
-#### Subscripting operator
+#### *Subscripting operator*
 
 ```c++
 //public
@@ -196,7 +196,16 @@ This function is called when the user wants to insert a new element into the con
 
 This operator searches for the key given in input. If such key is present in the tree, it returns the value correspondent to that key, if it is not, it inserts the pair made by the given key and a default constructed value using the function `insert`. This operator has been overloaded twice, covering both the cases in which an lvalue or an rvalue is passed to the function.
 
-#### Put-to operator
+#### *Key*
+
+```c++
+// private
+	key_type key(typename bst<K, V, CO>::const_iterator it) const noexcept;
+```
+
+This function is needed in order to retrieve the key of the pointed node when requested as arguments of the function `node_depth()` used inside the function `print_bst()` which print the bi-dimensional structure of the tree.
+
+#### *Put-to operator*
 
 ```c++
 //public
@@ -206,16 +215,16 @@ This operator searches for the key given in input. If such key is present in the
 
 This function implement the overload of the put-to operator, which lets the user print the tree in ascending order of the keys.
 
-#### *Print_2D*
+#### *Print_bst*
 
 ```c++
-// public
-	void print_2D();
+//public
+	friend void print_bst(const bst& x, std::ostream& os=std::cout);
 ```
 
-This function is used to print the structure of the tree on a two-dimensional plane. In order to keep the implementation as simple as possible, the tree is not printed downward, with the root at the top and the deeper nodes at the bottom, but from left to right, with the root as the first node to the left, while left children grow upward and right ones downward.
+This function is used to print the structure of the tree on a two-dimensional plane.  In order to keep the implementation as simple as possible, the tree is not printed downward, with the root at the top and the deeper nodes at the bottom, but from left to right, with the root as the first node to the left, while left children grow upward and right ones downward.
 
-For example, consider the construction of the following tree:
+For example, consider the following tree
 
 ```c++
 std::pair<int, int> pair_0=std::make_pair(4, 2);
@@ -237,9 +246,9 @@ bst<int,int> binary_tree{};
 (void)binary_tree.insert(pair_6);
 ```
 
-The output of `binary_tree.print_2D();` becomes:
+the result obtained with `print_bst(binary_tree_0);` becomes:
 
-```bash
+```c++
                          (-3,25)
 
                (-1,1)
@@ -255,7 +264,9 @@ The output of `binary_tree.print_2D();` becomes:
                          (11,0)
 ```
 
-#### Max depth
+The tree is still printed according to the key comparison criterion (from the smallest to the larger key), but also taking account the node depth by means of whitespaces. 
+
+#### *Max depth*
 
 ```c++
 //public
@@ -264,7 +275,7 @@ The output of `binary_tree.print_2D();` becomes:
 
 This function is called when the user wants to know the depth of the tree. It returns an int representing the number parents of the node that is the most distant from the root. It does so by checking the distance from the root of all nodes, using the helper function `depth` defined in the node, and finding its maximum.
 
-#### Node depth
+#### *Node depth*
 
 ```c++
 //public
@@ -284,13 +295,13 @@ Since various functions (`_insert()`, `find()`, `find() const`) uses the same li
 
 ## Benchmark
 
-We compared the performance of our binary search tree to the c++ standard library functions std::map and std::unordered_map with integer key and value, the performance metric we used is the time to find 100 randomly drawn keys. We expect that std::map will show a logarithmic time complexity in the size of the container N O(log_{2}{N}) while for std::unordered_map the time complexity is constant O(1). For the unbalanced bst we expect O(log_{2}{N}) on average but O(N) in the worst case (the tree is a linked list), finally for the balanced version of the bst we will always have a time complexity of O(log_{2}{N}. The followind graph shows the time to find 100 keys averaged over 10 measurements with increasing size of the container, the data is obtained by running the code `benchmark.cc` compiled with -O3 optimization
+We compared the performance of our binary search tree to the c++ standard library functions std::map and std::unordered_map with integer key and value, the performance metric we used is the time to find 100 randomly drawn keys. We expect that std::map will show a logarithmic time complexity in the size of the container N $O(log_{2}{N})$ while for std::unordered_map the time complexity is constant $O(1)$. For the unbalanced bst we expect $O(log_{2}{N})$ on average but $O(N)$ in the worst case (the tree is a linked list), finally for the balanced version of the bst we will always have a time complexity of $O(log_{2}{N}$. The followind graph shows the time to find 100 keys averaged over 10 measurements with increasing size of the container, the data is obtained by running the code `benchmark.cc` compiled with -O3 optimization
 
 ![container_comparison](./cpp_exam/benchmarks/results/container_comparison.png)
 
 The results are consistent with our expectations, the unordered_map shows an approximately constant behaviour and is the fastest container, while the other containers show a logatithmic behaviour, with the balanced bst faster than the unbalanced one.
 
-We also compared double key types with int key types, we expect that the tree with double keys will take longer to find the same amount of keys, this is confirmed from the graph below.
+We also compared double key types with int key types, we expect that the tree with double keys will take longer to find the same amount of keys and this is confirmed from the graph below.
 
 ![key_comparison](./cpp_exam/benchmarks/results/key_comparison.png)
 
