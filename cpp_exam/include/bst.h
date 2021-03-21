@@ -340,7 +340,7 @@ class bst
             // extra spaces needed for deeper nodes in order
             // not to print the to close to the others.
             for (auto p = x.cbegin(); p != x.cend(); ++p) {
-                auto n_spaces=x.node_depth(x.key(p));
+                auto n_spaces=x.node_depth(x.key(p))+1;
                 auto extra_spaces=n_spaces;
 
                 os << "\n"; 
@@ -425,7 +425,7 @@ struct bst<K,V,CO>::node {
             // The parent is the first right ancestor of current node if the latter is its 
             // parent's left child.
             if(parent->left.get()==this) { return parent; }
-            // Otherwise, an iterative search begins
+            // Otherwise, an recursive search begins
             return parent->findUpper();
         }
 
@@ -438,7 +438,7 @@ struct bst<K,V,CO>::node {
      * \brief Computes the depth of the current node in the tree 
      * \return Depth    unsigned int storing the depth of the current node in the tree
      */
-    unsigned int depth(unsigned int&& Depth=1) const noexcept {
+    unsigned int depth(unsigned int&& Depth=0) const noexcept {
 
         if(parent) {
             // If current node has a parent, depth increases by one
@@ -521,7 +521,7 @@ class bst<K,V,CO>::_iterator {
          */
 	    _iterator operator++(int) noexcept {
 
-	        auto old(*this);
+	        auto old = *this;
 	        operator++();
 	        return old;
 

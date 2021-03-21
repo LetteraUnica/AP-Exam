@@ -49,10 +49,8 @@ int main()
 		std::cout << std::endl;
 
 		std::cout << "\n" << "TESTING ARROW OPERATOR" << "\n" << std::endl;
-		// Create a pointer to tree
-		auto tree_ptr = &binary_tree_0;
-		for(auto p = tree_ptr->cbegin(); p != tree_ptr->cend(); ++p) {
-			// Result should be equal to above
+		bst<int,int>* ptr_tree = &binary_tree_0;
+		for(auto p = ptr_tree->cbegin(); p != ptr_tree->cend(); ++p) {
 			std::cout << *p << "  ";
 		}
 		std::cout << std::endl;
@@ -189,9 +187,9 @@ int main()
 		// TESTING BALANCE
 		std::cout << "\n" << "TESTING BALANCE" << "\n" << std::endl;
 		std::cout << "balance binary_tree_4:" << std::endl;
-		std::cout << "binary_tree_3 was:" << std::endl;
+		std::cout << "binary_tree_4 was:" << std::endl;
 		print_bst(binary_tree_4);
-		std::cout << "binary_tree_3 after balance:" << std::endl;
+		std::cout << "binary_tree_4 after balance:" << std::endl;
 		binary_tree_4.balance();
 		print_bst(binary_tree_4);
 
