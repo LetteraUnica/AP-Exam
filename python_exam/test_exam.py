@@ -1,9 +1,5 @@
 import collections
 
-def repetitions_removal(l):
-    ''' takes a list l and returns a list with elements repeated just once (delete repetitions) '''
-    return [item for item in l if l.count(item) == 1] + [item for item, count in collections.Counter(l).items() if count > 1]
-
 def reverse_dict(d):
     new_keys = set([item for sublist in list(d.values()) for item in sublist])
     return {k: [item[0] for item in list(d.items()) if item[1].count(k) >= 1] for k in new_keys}

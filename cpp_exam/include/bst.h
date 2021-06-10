@@ -129,15 +129,22 @@ class bst
 
         /**
          * \brief Custom constructor of bst class
+         * \param pair      contains the key and value of the first node with which to build the tree (root)
+         * \param cmp      comparison method
+         */
+        bst(pair_type& pair, CO cmp=CO{}): root{new node{pair}}, comp{cmp} { };
+
+        /**
+         * \brief Custom constructor of bst class
          * \param _key      contains the key of the first node with which to build the tree (root)
          * \param _value    contains the value of the first node with which to build the tree (root)
          */
-        bst(key_type&& _key, value_type&& _value) { root.reset(new node{std::make_pair(_key, _value)}); }
+        bst(key_type&& _key, value_type&& _value) { root.reset(new node{std::make_pair(std::move(_key), std::move(_value))}); }
 
         /**
          * \brief Default destructor of bst class
          */
-        ~bst()=default;
+        ~bst() noexcept=default;
 
         /**
          * \brief Copy constructor of bst class
@@ -489,7 +496,7 @@ class bst<K,V,CO>::_iterator {
         /**
          * \brief Default destructor of iterator class
          */
-	    ~_iterator()=default;
+	    ~_iterator() noexcept=default;
 
         /**
          * \brief Pre-increment 

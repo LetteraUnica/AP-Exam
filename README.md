@@ -4,7 +4,7 @@
 
 ###### Group members: *Cavuoti Lorenzo*, *Sciorilli Marco*, *Sicklinger Marco*
 
-### AP-Exam repository
+### `exam_project` repository
 
 The project is divided into a series of directories in order to keep it as tidy as possible. 
 
